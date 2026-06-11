@@ -6,13 +6,13 @@
 * { box-sizing: border-box; }
 
 :root {
-  --glass-bg: rgba(255, 255, 255, 0.5);
-  --glass-border: rgba(255, 255, 255, 0.45);
-  --glass-shadow: 0 8px 32px rgba(244, 114, 182, 0.12);
-  --glass-blur: blur(80px);
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-border: rgba(255, 255, 255, 0.70);
+  --glass-shadow: 0 8px 32px rgba(220, 80, 160, 0.14), 0 2px 8px rgba(255, 100, 80, 0.10);
+  --glass-blur: blur(22px);
 
-  --card: rgba(255, 255, 255, 0.18);
-  --sidebar: rgba(255, 255, 255, 0.16);
+  --card: rgba(255, 255, 255, 0.62);
+  --sidebar: rgba(255, 255, 255, 0.58);
 
   --accent: #F472B6;
   --accent-hover: #EC4899;
@@ -40,17 +40,18 @@ html, body {
 body {
   background: linear-gradient(
     135deg,
-    #fff7f8 0%,
-    #ffe4ec 35%,
-    #fff1f4 65%,
-    #ffe9f1 100%
+    #fde8f0 0%,
+    #fcd0e2 30%,
+    #fde8f5 60%,
+    #fdd8e8 100%
   );
 
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(255,182,193,.45), transparent 40%),
-    radial-gradient(circle at 80% 15%, rgba(255,218,185,.35), transparent 40%),
-    radial-gradient(circle at 80% 80%, rgba(255,192,203,.35), transparent 40%),
-    radial-gradient(circle at 15% 85%, rgba(255,240,245,.45), transparent 40%);
+    radial-gradient(circle at 18% 18%, rgba(255, 100, 160, 0.55), transparent 38%),
+    radial-gradient(circle at 80% 12%, rgba(255, 170, 80, 0.45), transparent 36%),
+    radial-gradient(circle at 82% 78%, rgba(200, 100, 220, 0.38), transparent 38%),
+    radial-gradient(circle at 12% 82%, rgba(255, 120, 140, 0.50), transparent 38%),
+    radial-gradient(circle at 50% 50%, rgba(255, 190, 210, 0.30), transparent 50%);
 
   background-attachment: fixed;
   overflow-x: hidden;
@@ -293,7 +294,7 @@ body {
 .fusion-input {
   width: 100%;
   padding: 11px 14px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.45);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xs);
   font-size: 13.5px; color: var(--text);
@@ -303,7 +304,7 @@ body {
 }
 .fusion-input:focus { 
   border-color: var(--accent); 
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.70);
   box-shadow: 0 0 0 3px rgba(255, 122, 69, 0.15);
 }
 .fusion-input::placeholder { color: var(--text-light); }
@@ -311,7 +312,7 @@ body {
 .fusion-select {
   width: 100%;
   padding: 10px 14px;
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.45);
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xs);
   font-size: 13px; color: var(--text);
@@ -322,7 +323,7 @@ body {
 }
 .fusion-select:focus { 
   border-color: var(--accent); 
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.70);
 }
 
 /* ── INTERACTIVE BUTTONS ── */
@@ -380,23 +381,23 @@ body {
   max-height: 220px; overflow-y: auto;
   border-radius: var(--radius-xs);
   border: 1px solid var(--glass-border);
-  background: rgba(255, 255, 255, 0.01);
+  background: rgba(255, 255, 255, 0.30);
   margin-bottom: 14px;
 }
 .fusion-food-row {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 16px;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
   cursor: pointer; transition: background 0.15s;
 }
 .fusion-food-row:last-child { border-bottom: none; }
-.fusion-food-row:hover { background: rgba(255, 255, 255, 0.03); }
+.fusion-food-row:hover { background: rgba(255, 255, 255, 0.40); }
 .fusion-food-row.selected { background: var(--accent-light); }
 
 /* ── METRIC PREVIEW CELL GRID ── */
 .fusion-preview {
   display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
-  background: rgba(255, 255, 255,0.5); 
+  background: rgba(255, 255, 255, 0.55); 
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xs);
   padding: 14px; margin-bottom: 14px;
@@ -409,14 +410,14 @@ body {
 .fusion-log-row {
   display: flex; align-items: flex-start; gap: 12px;
   padding: 14px; border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.65);
   margin-bottom: 10px;
   transition: all 0.15s;
 }
 .fusion-log-row:hover { 
-  background: rgba(255, 255, 255, 0.04);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.58);
+  border-color: rgba(255, 255, 255, 0.80);
 }
 
 /* ── RECONFIGURED MACRO CARDS ── */
@@ -452,11 +453,11 @@ body {
   padding: 6px 10px; border-radius: var(--radius-xs); font-size: 12px;
   transition: background 0.1s;
 }
-.fusion-exch-row:hover { background: rgba(255, 255, 255, 0.03); }
+.fusion-exch-row:hover { background: rgba(255, 255, 255, 0.45); }
 
 /* ── HERO BANNER ── */
 .fusion-hero {
-  background: linear-gradient(100deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%);
+  background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
