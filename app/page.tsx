@@ -108,28 +108,29 @@ export default function Home() {
   return (
     <div className="fusion-layout">
 
-      {/* ── SIDEBAR ── */}
-      <aside className="fusion-sidebar">
-        {/* Logo */}
-        <div className="fusion-logo">
-          <div className="fusion-logo-icon">A</div>
-          <div>
-            <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>NutriTrack</p>
-            <p style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 1 }}>Filipino FEL</p>
-          </div>
-        </div>
+     {/* ── SIDEBAR ── */}
+<aside className="fusion-sidebar">
 
-        {/* Nav */}
-        <nav className="fusion-nav">
-          <p className="fusion-nav-label">Main Menu</p>
-          {NAV_ITEMS.map((item) => (
-            <div key={item.label} className={`fusion-nav-item ${item.active ? 'active' : ''}`}>
-              <span style={{ fontSize: 16 }}>{item.icon}</span>
-              {item.label}
-            </div>
-          ))}
-        </nav>
-      </aside>
+  {/* Logo */}
+  <div className="fusion-logo">
+    <div className="fusion-logo-icon">A</div>
+  </div>
+
+  {/* Navigation */}
+  <nav className="fusion-nav">
+    {NAV_ITEMS.map((item) => (
+      <div
+        key={item.label}
+        className={`fusion-nav-item ${item.active ? 'active' : ''}`}
+      >
+        <span className="fusion-nav-icon">
+          {item.icon}
+        </span>
+      </div>
+    ))}
+  </nav>
+
+</aside>
 
       {/* ── MAIN ── */}
       <div className="fusion-main">
