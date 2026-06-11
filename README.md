@@ -52,7 +52,7 @@ Track what you eat, see your macronutrient breakdown in real time, and understan
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 
@@ -84,7 +84,7 @@ npm start
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 ancie-nutri-retreat/
@@ -102,7 +102,7 @@ ancie-nutri-retreat/
 
 ---
 
-## 📊 Food Exchange Reference
+##  Food Exchange Reference
 
 The tracker uses the standard Philippine FEL exchange values:
 
