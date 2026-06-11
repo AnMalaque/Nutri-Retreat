@@ -3,11 +3,12 @@ import {
   Search,
   Leaf,
   Bubbles,
+  Sparkles,
   Wheat,
   Beef,
   Broccoli,
   Milk,
-  Apple
+  Apple,
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 
@@ -270,7 +271,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
         onClick={handleAdd}
         disabled={!selectedFood || !grams || parseFloat(grams) <= 0}
       >
-        ✨ Add to Log
+        <Sparkles /> Add to Log
       </button>
     </div>
   )
