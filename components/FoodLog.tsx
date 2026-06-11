@@ -1,5 +1,11 @@
 'use client'
-
+import {
+  Wheat,
+  Beef,
+  Broccoli,
+  Milk,
+  Apple,
+} from 'lucide-react'
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 
 export interface LogEntry {
@@ -16,12 +22,12 @@ export interface LogEntry {
   unit: string
 }
 
-const TYPE_CONFIG: Record<FoodType, { emoji: string; color: string; label: string }> = {
-  rice:      { emoji: '🍚', color: '#F9A03F', label: 'Rice' },
-  meat:      { emoji: '🥩', color: '#E85555', label: 'Meat' },
-  vegetable: { emoji: '🥦', color: '#4CAF82', label: 'Vegetable' },
-  milk:      { emoji: '🥛', color: '#5B9BD5', label: 'Milk' },
-  fruit:     { emoji: '🍎', color: '#9B59B6', label: 'Fruit' },
+const TYPE_CONFIG: Record<FoodType, { icon: React.ReactNode; color: string; label: string }> = {
+  rice:      { icon: <Wheat />, color: '#F9A03F', label: 'Rice' },
+  meat:      { icon: <Beef />, color: '#E85555', label: 'Meat' },
+  vegetable: { icon: <Broccoli />, color: '#4CAF82', label: 'Vegetable' },
+  milk:      { icon: <Milk />, color: '#5B9BD5', label: 'Milk' },
+  fruit:     { icon: <Apple />, color: '#9B59B6', label: 'Fruit' },
 }
 
 interface FoodLogProps {
@@ -33,7 +39,7 @@ export default function FoodLog({ entries, onRemove }: FoodLogProps) {
   if (entries.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '32px 16px' }}>
-        <div style={{ fontSize: 40, marginBottom: 10 }}>🌾</div>
+        <div style={{ fontSize: 40, marginBottom: 10 }}><Wheat /></div>
         <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Your food log is empty.</p>
         <p style={{ color: 'var(--text-light)', fontSize: 12, marginTop: 4 }}>
           Add foods to track your nutrition!
@@ -51,7 +57,7 @@ export default function FoodLog({ entries, onRemove }: FoodLogProps) {
         return (
           <div key={entry.id} className="fusion-log-row">
             {/* Icon */}
-            <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{cfg.emoji}</span>
+            <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{cfg.icon}</span>
 
             {/* Info */}
             <div style={{ flex: 1, minWidth: 0 }}>

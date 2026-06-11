@@ -1,5 +1,11 @@
 'use client'
-
+import {
+  Wheat,
+  Beef,
+  Broccoli,
+  Milk,
+  Apple
+} from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
@@ -24,12 +30,12 @@ interface FoodSearchProps {
   onAddFood: (food: FoodItem, grams: number, type: FoodType) => void
 }
 
-const FOOD_TYPES: { value: FoodType; label: string; icon: string }[] = [
-  { value: 'rice',      label: 'Rice',      icon: '🍚' },
-  { value: 'meat',      label: 'Meat',      icon: '🥩' },
-  { value: 'vegetable', label: 'Vegetable', icon: '🥦' },
-  { value: 'milk',      label: 'Milk',      icon: '🥛' },
-  { value: 'fruit',     label: 'Fruit',     icon: '🍎' },
+const FOOD_TYPES: { value: FoodType; label: string; icon: React.ReactNode }[] = [
+  { value: 'rice',      label: 'Rice',      icon: <Wheat /> },
+  { value: 'meat',      label: 'Meat',      icon: <Beef /> },
+  { value: 'vegetable', label: 'Vegetable', icon: <Broccoli /> },
+  { value: 'milk',      label: 'Milk',      icon: <Milk /> },
+  { value: 'fruit',     label: 'Fruit',     icon: <Apple /> },
 ]
 
 const MEAT_FILTERS = [
@@ -117,7 +123,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
 
   return (
     <div className="fusion-card">
-      <h2 className="fusion-card-title">🌿 Add Food to Log</h2>
+      <h2 className="fusion-card-title"><Wheat / > Add Food to Log</h2>
 
       {/* Type tabs */}
       <div className="fusion-tabs">
