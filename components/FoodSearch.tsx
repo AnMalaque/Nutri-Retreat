@@ -1,6 +1,7 @@
 'use client'
 import {
   Search,
+  Scan,
   Leaf,
   Bubbles,
   Sparkles,
@@ -222,7 +223,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
           border: '1.5px solid var(--border)',
         }}>
           <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)', marginBottom: 10 }}>
-            📍 {selectedFood.english_name}
+            <Scan /> {selectedFood.english_name}
             <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: 6 }}>
               (1 exchange = {baseWeight}{selectedFood.amount_ml ? 'ml' : 'g'})
             </span>
