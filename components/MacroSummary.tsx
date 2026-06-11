@@ -1,5 +1,9 @@
 'use client'
-
+import {
+  Wheat,
+  BicepsFlexed,
+  Cuboid
+} from 'lucide-react'
 interface MacroTotals {
   carbs: number
   protein: number
@@ -25,7 +29,7 @@ export default function MacroSummary({ totals }: MacroSummaryProps) {
     {
       key: 'carbs',
       label: 'Carbohydrates',
-      emoji: '🌾',
+      icon: <Wheat/>,
       grams: totals.carbs,
       kcal: carbCal,
       pct: carbPct,
@@ -36,7 +40,7 @@ export default function MacroSummary({ totals }: MacroSummaryProps) {
     {
       key: 'prot',
       label: 'Protein',
-      emoji: '💪',
+      icon: <BicepsFlexed/>,
       grams: totals.protein,
       kcal: protCal,
       pct: protPct,
@@ -47,7 +51,7 @@ export default function MacroSummary({ totals }: MacroSummaryProps) {
     {
       key: 'fat',
       label: 'Fat',
-      emoji: '🧈',
+      icon: <Cuboid/>,
       grams: totals.fat,
       kcal: fatCal,
       pct: fatPct,
@@ -72,7 +76,7 @@ export default function MacroSummary({ totals }: MacroSummaryProps) {
                 <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 400 }}>g</span>
               </p>
             </div>
-            <span style={{ fontSize: 22 }}>{m.emoji}</span>
+            <span style={{ fontSize: 22 }}>{m.icon}</span>
           </div>
 
           {/* Progress bar */}
