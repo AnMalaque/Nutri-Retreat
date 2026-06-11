@@ -14,9 +14,9 @@
   --card: rgba(255, 255, 255, 0.62);
   --sidebar: rgba(255, 255, 255, 0.58);
 
-  --accent: #F472B6;
-  --accent-hover: #EC4899;
-  --accent-light: rgba(244, 114, 182, 0.12);
+  --accent: #39FF14;
+  --accent-hover: #00FF66;
+  --accent-light: rgba(57, 255, 20, 0.15);
 
   --green: #6EE7B7;
   --green-light: rgba(110, 231, 183, 0.15);
@@ -39,20 +39,19 @@ html, body {
 
 body {
   background: linear-gradient(
-    135deg,
-    #fde8f0 0%,
-    #fcd0e2 30%,
-    #fde8f5 60%,
-    #fdd8e8 100%
-  );
+  135deg,
+  #041b0d 0%,
+  #0a2f16 30%,
+  #08331a 60%,
+  #021108 100%
+);
 
   background-image:
-    radial-gradient(circle at 18% 18%, rgba(255, 100, 160, 0.55), transparent 38%),
-    radial-gradient(circle at 80% 12%, rgba(255, 170, 80, 0.45), transparent 36%),
-    radial-gradient(circle at 82% 78%, rgba(200, 100, 220, 0.38), transparent 38%),
-    radial-gradient(circle at 12% 82%, rgba(255, 120, 140, 0.50), transparent 38%),
-    radial-gradient(circle at 50% 50%, rgba(255, 190, 210, 0.30), transparent 50%);
-
+  radial-gradient(circle at 18% 18%, rgba(57, 255, 20, 0.55), transparent 38%),
+  radial-gradient(circle at 80% 12%, rgba(0, 255, 128, 0.45), transparent 36%),
+  radial-gradient(circle at 82% 78%, rgba(0, 255, 170, 0.38), transparent 38%),
+  radial-gradient(circle at 12% 82%, rgba(57, 255, 20, 0.50), transparent 38%),
+  radial-gradient(circle at 50% 50%, rgba(120, 255, 120, 0.30), transparent 50%);
   background-attachment: fixed;
   overflow-x: hidden;
 }
@@ -86,12 +85,12 @@ body {
 }
 
 /* Six faces of the cube — size set per-cube via --s custom property */
-.cube-field .face.front  { transform: translateZ(calc(var(--s) / 2)); background: rgba(255, 182, 193, 0.35); }
-.cube-field .face.back   { transform: translateZ(calc(var(--s) / -2)) rotateY(180deg); background: rgba(255, 192, 203, 0.30); }
-.cube-field .face.right  { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); background: rgba(255, 218, 224, 0.32); }
-.cube-field .face.left   { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); background: rgba(244, 114, 182, 0.18); }
-.cube-field .face.top    { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: rgba(255, 240, 245, 0.45); }
-.cube-field .face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); background: rgba(255, 200, 210, 0.22); }
+.cube-field .face.front  { transform: translateZ(calc(var(--s) / 2)); background: rgba(57, 255, 20, 0.35); }
+.cube-field .face.back   { transform: translateZ(calc(var(--s) / -2)) rotateY(180deg); background: rgba(0, 255, 128, 0.30); }
+.cube-field .face.right  { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); background: rgba(80, 255, 150, 0.32); }
+.cube-field .face.left   { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); background: rgba(0, 255, 80, 0.18s); }
+.cube-field .face.top    { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: rgba(180, 255, 180, 0.45); }
+.cube-field .face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); background: rgba(57, 255, 20, 0.22); }
 
 @keyframes cube-float {
   0%   { transform: translate3d(0, 0, 0); }
