@@ -1,36 +1,135 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
 
-## Getting Started
+# Ancie Nutri Retreat
 
-First, run the development server:
+### *A cozy Filipino food exchange tracker for mindful eating*
+
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/license-MIT-FF6B35?style=flat-square)](LICENSE)
+
+<br/>
+
+> *Log your meals, understand your macros, and eat well — all through the lens of the Filipino Food Exchange List.*
+
+<br/>
+
+</div>
+
+---
+
+## What is this?
+
+**Ancie Nutri Retreat** is a warm, web-based nutrition tracker built around the **Filipino Food Exchange List (FEL)** — a dietary reference system used by Filipino nutritionists and dietitians. Instead of guessing calories from scratch, you work with standardized food exchanges across five food groups: meat, rice, vegetables, fruit, and milk.
+
+Track what you eat, see your macronutrient breakdown in real time, and understand your energy intake using the **Atwater general factors** (Carbs × 4, Protein × 4, Fat × 9).
+
+---
+
+## Features
+
+- **Food Search** — search from a curated Filipino FEL database by food type
+- **Live Macro Dashboard** — real-time carbohydrate, protein, and fat totals as you log
+- **Energy Breakdown** — Atwater-calculated calorie panel per macronutrient
+- **Food Log** — add, scale by grams/ml, and remove individual entries
+- **Exchange Reference Panel** — quick-glance FEL exchange values for all food groups
+- **Live Clock** — floating time pill localized to Philippine time (`en-PH`)
+- **Parallax Background** — animated ambient blobs and dot-grid that breathe behind the cards
+- **Soft Glassmorphic UI** — warm orange-accented design system with layered card depth
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| **Framework** | [Next.js 15](https://nextjs.org/) (App Router) |
+| **Language** | [TypeScript 5](https://www.typescriptlang.org/) |
+| **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) + custom CSS design system |
+| **Typography** | [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts |
+| **Icons** | Emoji + inline SVG |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js `≥ 18`
+- npm or yarn
+
+### Installation
 
 ```bash
+# 1. Clone the repo
+git clone https://github.com/AnMalaque/ancie-nutri-retreat.git
+cd ancie-nutri-retreat
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build for production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 📁 Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+ancie-nutri-retreat/
+├── app/
+│   ├── page.tsx           # Main dashboard — layout, state, hero card
+│   ├── layout.tsx         # Root layout + font imports
+│   └── globals.css        # Full design system (fusion-* tokens & classes)
+├── components/
+│   ├── FoodSearch.tsx     # Search input, food type tabs, portion selector
+│   ├── FoodLog.tsx        # Scrollable log of added entries
+│   └── MacroSummary.tsx   # Carb / Protein / Fat stat cards
+└── public/
+    └── ...                # Static assets
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📊 Food Exchange Reference
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The tracker uses the standard Philippine FEL exchange values:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Group | Exchange | Carbs | Protein | Fat | kcal |
+|---|---|---|---|---|---|
+|  Vegetable | 1 exchange | 3g | 1g | 0g | 16 |
+|  Fruit | 1 exchange | 10g | 0g | 0g | 40 |
+|  Rice A | 1 exchange | 23g | 0g | 0g | 92 |
+|  Milk (Skim) | 1 exchange | 12g | 8g | 0g | 80 |
+|  Meat (Low Fat) | 1 exchange | 0g | 8g | 1g | 41 |
+
+*C = carbs · P = protein · F = fat (grams)*
+
+---
+
+## Philosophy
+
+This project is built with calm and intention. No heavy dependencies, no bloated bundles — just a clean Next.js app that does one thing well: help you understand what you're eating, through a food system that's native to Filipino kitchens.
+
+---
+
+## MIT License
+
+MIT © [AnMalaque](https://github.com/AnMalaque)
+
+---
+
+<div align="center">
+  <sub>Made with 🧡 and a lot of rice exchanges</sub>
+</div>
