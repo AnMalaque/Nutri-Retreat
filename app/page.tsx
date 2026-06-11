@@ -1,10 +1,24 @@
 'use client'
-
 import { useState, useCallback, useEffect } from 'react'
 import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
-
+import { 
+  LayoutDashboard,
+  Hamburger,
+  History,
+  Target,
+  Broccoli, 
+  Apple, 
+  Wheat, 
+  Cookie, 
+  Beef, 
+  Milk, 
+  Droplets, 
+  FlameKindling, 
+  Fish, 
+  Drumstick 
+} from 'lucide-react';
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 
 interface FoodItem {
@@ -21,24 +35,24 @@ interface FoodItem {
 }
 
 const NAV_ITEMS = [
-  { icon: '📊', label: 'Dashboard',    active: true  },
-  { icon: '📋', label: 'FEL',          active: false },
-  { icon: '🕐', label: 'Food History', active: false },
-  { icon: '🎯', label: 'Meal Goals',   active: false },
+  { icon: <LayoutDashboard />, label: 'Dashboard',    active: true  },
+  { icon: <Hamburger />, label: 'FEL',          active: false },
+  { icon: <History />, label: 'Food History', active: false },
+  { icon: <Target />, label: 'Meal Goals',   active: false },
 ]
 
 const EXCHANGE_REF = [
-  { emoji: '🥦', label: 'Vegetable',        val: '3C·1P·0F = 16'   },
-  { emoji: '🍎', label: 'Fruit',            val: '10C·0P·0F = 40'  },
-  { emoji: '🍚', label: 'Rice A (Low P)',    val: '23C·0P·0F = 92'  },
-  { emoji: '🍚', label: 'Rice B (Med P)',    val: '23C·2P·0F = 100' },
-  { emoji: '🍚', label: 'Rice C (High P)',   val: '23C·4P·0F = 108' },
-  { emoji: '🥛', label: 'Milk (Whole)',      val: '12C·8P·10F = 170'},
-  { emoji: '🥛', label: 'Milk (Low Fat)',    val: '12C·8P·5F = 125' },
-  { emoji: '🥛', label: 'Milk (Skim)',       val: '12C·8P·0F = 80'  },
-  { emoji: '🥩', label: 'Meat (Low Fat)',    val: '0C·8P·1F = 41'   },
-  { emoji: '🥩', label: 'Meat (Med Fat)',    val: '0C·8P·6F = 86'   },
-  { emoji: '🥩', label: 'Meat (High Fat)',   val: '0C·8P·10F = 122' },
+  { icon: <Broccoli />,         label: 'Vegetable',        val: '3C·1P·0F = 16'   },
+  { icon: <Apple />,         label: 'Fruit',            val: '10C·0P·0F = 40'  },
+  { icon: <Wheat />,         label: 'Rice A (Low P)',    val: '23C·0P·0F = 92'  },
+  { icon: <Cookie />,         label: 'Rice B (Med P)',    val: '23C·2P·0F = 100' },
+  { icon: <FlameKindling />,         label: 'Rice C (High P)',   val: '23C·4P·0F = 108' },
+  { icon: <Milk />,          label: 'Milk (Whole)',      val: '12C·8P·10F = 170'},
+  { icon: <Droplets />,      label: 'Milk (Low Fat)',    val: '12C·8P·5F = 125' },
+  { icon: <Milk />,          label: 'Milk (Skim)',       val: '12C·8P·0F = 80'  },
+  { icon: <Beef />,          label: 'Meat (Low Fat)',    val: '0C·8P·1F = 41'   },
+  { icon: <Fish />,     label: 'Meat (Med Fat)',    val: '0C·8P·6F = 86'   },
+  { icon: <Drumstick />,          label: 'Meat (High Fat)',   val: '0C·8P·10F = 122' },
 ]
 
 export default function Home() {
@@ -95,7 +109,7 @@ export default function Home() {
       <aside className="fusion-sidebar">
         {/* Logo */}
         <div className="fusion-logo">
-          <div className="fusion-logo-icon">🥗</div>
+          <div className="fusion-logo-icon">A</div>
           <div>
             <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>NutriTrack</p>
             <p style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 1 }}>Filipino FEL</p>
@@ -130,7 +144,7 @@ export default function Home() {
               background: 'linear-gradient(135deg, #FF8C5A, #FF5722)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 26, zIndex: 1,
-            }}>🥗</div>
+            }}>A</div>
 
             <div style={{ zIndex: 1 }}>
               <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>Today&apos;s Nutrition</p>
@@ -139,7 +153,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div style={{ marginLeft: 'auto', textAlign: 'right', zIndex: 1, flexShrink: 0 }}>
+            <div style={{ marginLeft: 'auto', textAlign: 'center', zIndex: 1, flexShrink: 0 }}>
               <p style={{ fontSize: 40, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
                 {totalKcal}
               </p>
@@ -150,16 +164,10 @@ export default function Home() {
                   className="fusion-btn-ghost"
                   style={{ marginTop: 8, fontSize: 11, padding: '5px 12px' }}
                 >
-                  🗑 Clear All
+                   Clear All
                 </button>
               )}
             </div>
-
-            {/* Decorative plant emoji */}
-            <span style={{
-              position: 'absolute', right: 28, top: '50%', transform: 'translateY(-50%)',
-              fontSize: 64, zIndex: 1, opacity: 0.7, lineHeight: 1, userSelect: 'none',
-            }}>🌿</span>
           </div>
 
           {/* ── MACRO ROW + RIGHT PANEL (2-col grid) ── */}
@@ -209,7 +217,7 @@ export default function Home() {
                   {EXCHANGE_REF.map((item) => (
                     <div key={item.label} className="fusion-exch-row">
                       <span style={{ fontSize: 12, color: 'var(--text)', fontWeight: 500 }}>
-                        {item.emoji} {item.label}
+                        {item.icon} {item.label}
                       </span>
                       <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
                         {item.val}
