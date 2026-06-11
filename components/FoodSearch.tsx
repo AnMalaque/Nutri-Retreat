@@ -1,5 +1,17 @@
 'use client'
-
+import{
+  BadgePlus,
+  Sparkle,
+  Scan,
+  Bubbles,
+  Search,
+  Leaf,
+  Wheat,
+  Beef,
+  Broccoli,
+  Milk,
+  Apple,
+} from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
@@ -24,12 +36,12 @@ interface FoodSearchProps {
   onAddFood: (food: FoodItem, grams: number, type: FoodType) => void
 }
 
-const FOOD_TYPES: { value: FoodType; label: string; icon: string }[] = [
-  { value: 'rice',      label: 'Rice',      icon: '🍚' },
-  { value: 'meat',      label: 'Meat',      icon: '🥩' },
-  { value: 'vegetable', label: 'Vegetable', icon: '🥦' },
-  { value: 'milk',      label: 'Milk',      icon: '🥛' },
-  { value: 'fruit',     label: 'Fruit',     icon: '🍎' },
+const FOOD_TYPES: { value: FoodType; label: string; icon: React.ReactNode }[] = [
+  { value: 'rice',      label: 'Rice',      icon: <Wheat /> },
+  { value: 'meat',      label: 'Meat',      icon: <Beef /> },
+  { value: 'vegetable', label: 'Vegetable', icon: <Broccoli /> },
+  { value: 'milk',      label: 'Milk',      icon: <Milk /> },
+  { value: 'fruit',     label: 'Fruit',     icon: <Apple /> },
 ]
 
 const MEAT_FILTERS = [
@@ -117,7 +129,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
 
   return (
     <div className="fusion-card">
-      <h2 className="fusion-card-title">🌿 Add Food to Log</h2>
+      <h2 className="fusion-card-title"><BadgePlus /> Add Food to Log</h2>
 
       {/* Type tabs */}
       <div className="fusion-tabs">
@@ -150,7 +162,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
         <span style={{
           position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
           color: 'var(--text-muted)', fontSize: 14, pointerEvents: 'none',
-        }}>🔍</span>
+        }}><Search /></span>
         <input
           type="text"
           className="fusion-input"
@@ -165,11 +177,11 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
       <div className="fusion-food-list">
         {loading ? (
           <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
-            Loading foods… 🌱
+            Loading foods… <Bubbles />
           </div>
         ) : foods.length === 0 ? (
           <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
-            No foods found. Try a different search! 🍂
+            No foods found. Try a different search! <Leaf />
           </div>
         ) : (
           foods.map((food) => {
@@ -213,7 +225,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
           backdropFilter: 'blur(10px)',
         }}>
           <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)', marginBottom: 10 }}>
-            📍 {selectedFood.english_name}
+            <Scan/> {selectedFood.english_name}
             <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: 6 }}>
               (1 exchange = {baseWeight}{selectedFood.amount_ml ? 'ml' : 'g'})
             </span>
@@ -262,7 +274,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
         onClick={handleAdd}
         disabled={!selectedFood || !grams || parseFloat(grams) <= 0}
       >
-        ✨ Add to Log
+        <Sparkle /> Add to Log
       </button>
     </div>
   )
