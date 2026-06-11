@@ -24,44 +24,44 @@ interface FoodSearchProps {
   onAddFood: (food: FoodItem, grams: number, type: FoodType) => void
 }
 
-const FOOD_TYPES: { value: FoodType; label: string; icon: string; color: string }[] = [
-  { value: 'rice', label: 'Rice & Starches', icon: '🍚', color: 'bg-amber-100 border-amber-400 text-amber-800' },
-  { value: 'meat', label: 'Meat & Protein', icon: '🥩', color: 'bg-red-100 border-red-400 text-red-800' },
-  { value: 'vegetable', label: 'Vegetables', icon: '🥦', color: 'bg-green-100 border-green-400 text-green-800' },
-  { value: 'milk', label: 'Milk & Dairy', icon: '🥛', color: 'bg-blue-100 border-blue-400 text-blue-800' },
-  { value: 'fruit', label: 'Fruits', icon: '🍎', color: 'bg-purple-100 border-purple-400 text-purple-800' },
+const FOOD_TYPES: { value: FoodType; label: string; icon: string }[] = [
+  { value: 'rice',      label: 'Rice',      icon: '🍚' },
+  { value: 'meat',      label: 'Meat',      icon: '🥩' },
+  { value: 'vegetable', label: 'Vegetable', icon: '🥦' },
+  { value: 'milk',      label: 'Milk',      icon: '🥛' },
+  { value: 'fruit',     label: 'Fruit',     icon: '🍎' },
 ]
 
 const MEAT_FILTERS = [
   { value: '', label: 'All fat levels' },
-  { value: 'low', label: '🟢 Low Fat (41 kcal/exchange)' },
+  { value: 'low',    label: '🟢 Low Fat (41 kcal/exchange)' },
   { value: 'medium', label: '🟡 Medium Fat (86 kcal/exchange)' },
-  { value: 'high', label: '🔴 High Fat (122 kcal/exchange)' },
+  { value: 'high',   label: '🔴 High Fat (122 kcal/exchange)' },
 ]
 
 const RICE_FILTERS = [
   { value: '', label: 'All types' },
-  { value: 'low', label: 'Rice A – Low Protein (92 kcal)' },
+  { value: 'low',    label: 'Rice A – Low Protein (92 kcal)' },
   { value: 'medium', label: 'Rice B – Medium Protein (100 kcal)' },
-  { value: 'high', label: 'Rice C – High Protein (108 kcal)' },
+  { value: 'high',   label: 'Rice C – High Protein (108 kcal)' },
 ]
 
 const MILK_FILTERS = [
   { value: '', label: 'All types' },
-  { value: 'whole', label: 'Whole (170 kcal/exchange)' },
+  { value: 'whole',   label: 'Whole (170 kcal/exchange)' },
   { value: 'low_fat', label: 'Low Fat (125 kcal/exchange)' },
   { value: 'non_fat', label: 'Non-Fat / Skim (80 kcal/exchange)' },
 ]
 
 export default function FoodSearch({ onAddFood }: FoodSearchProps) {
   const [selectedType, setSelectedType] = useState<FoodType>('rice')
-  const [search, setSearch] = useState('')
-  const [filter, setFilter] = useState('')
-  const [foods, setFoods] = useState<FoodItem[]>([])
-  const [loading, setLoading] = useState(false)
+  const [search, setSearch]             = useState('')
+  const [filter, setFilter]             = useState('')
+  const [foods, setFoods]               = useState<FoodItem[]>([])
+  const [loading, setLoading]           = useState(false)
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null)
-  const [grams, setGrams] = useState('')
-  const searchDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const [grams, setGrams]               = useState('')
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const fetchFoods = async () => {
     setLoading(true)
@@ -73,7 +73,7 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
         if (selectedType === 'rice') params.set('protein_level', filter)
         if (selectedType === 'milk') params.set('category', filter)
       }
-      const res = await fetch(`/api/foods?${params}`)
+      const res  = await fetch(`/api/foods?${params}`)
       const json = await res.json()
       setFoods(json.data || [])
     } catch {
@@ -84,8 +84,8 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
   }
 
   useEffect(() => {
-    if (searchDebounce.current) clearTimeout(searchDebounce.current)
-    searchDebounce.current = setTimeout(() => { fetchFoods() }, 300)
+    if (debounce.current) clearTimeout(debounce.current)
+    debounce.current = setTimeout(fetchFoods, 300)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedType, search, filter])
 
@@ -102,32 +102,30 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
     setGrams('')
   }
 
-  const baseWeight = selectedFood?.weight_g || selectedFood?.amount_ml || 0
-  const gramsNum = parseFloat(grams) || 0
-  const ratio = baseWeight > 0 ? gramsNum / baseWeight : 0
-  const previewCal = ratio * (selectedFood?.calories || 0)
-  const previewCarbs = ratio * (selectedFood?.carbohydrate_g || 0)
-  const previewProt = ratio * (selectedFood?.protein_g || 0)
-  const previewFat = ratio * (selectedFood?.fat_g || 0)
+  const baseWeight  = selectedFood?.weight_g || selectedFood?.amount_ml || 0
+  const gramsNum    = parseFloat(grams) || 0
+  const ratio       = baseWeight > 0 ? gramsNum / baseWeight : 0
+  const previewCal  = ratio * (selectedFood?.calories        || 0)
+  const previewCarb = ratio * (selectedFood?.carbohydrate_g  || 0)
+  const previewProt = ratio * (selectedFood?.protein_g       || 0)
+  const previewFat  = ratio * (selectedFood?.fat_g           || 0)
+
+  const subFilters =
+    selectedType === 'meat' ? MEAT_FILTERS :
+    selectedType === 'rice' ? RICE_FILTERS :
+    selectedType === 'milk' ? MILK_FILTERS : null
 
   return (
-    <div className="cozy-panel">
-      <h2 className="text-retreat-text font-cozy text-lg font-bold mb-4 flex items-center gap-2">
-        🌿 Add Food to Log
-      </h2>
+    <div className="fusion-card">
+      <h2 className="fusion-card-title">🌿 Add Food to Log</h2>
 
-      {/* Food type selector */}
-      <div className="flex flex-wrap gap-2 mb-4">
+      {/* Type tabs */}
+      <div className="fusion-tabs">
         {FOOD_TYPES.map((ft) => (
           <button
             key={ft.value}
+            className={`fusion-tab ${selectedType === ft.value ? 'active' : ''}`}
             onClick={() => setSelectedType(ft.value)}
-            className={`cozy-badge cursor-pointer transition-all ${
-              selectedType === ft.value
-                ? 'bg-retreat-green text-retreat-surface border-retreat-green shadow-cozy'
-                : 'bg-retreat-panel text-retreat-textMuted border-retreat-border hover:border-retreat-green'
-            }`}
-            style={{ padding: '6px 14px', fontSize: '12px', borderRadius: '20px', border: '2px solid' }}
           >
             {ft.icon} {ft.label}
           </button>
@@ -135,119 +133,121 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
       </div>
 
       {/* Sub-filter */}
-      {(selectedType === 'meat' || selectedType === 'rice' || selectedType === 'milk') && (
-        <div className="mb-3">
-          <select
-            className="cozy-input"
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-          >
-            {(selectedType === 'meat' ? MEAT_FILTERS : selectedType === 'rice' ? RICE_FILTERS : MILK_FILTERS).map((f) => (
-              <option key={f.value} value={f.value}>{f.label}</option>
-            ))}
-          </select>
-        </div>
+      {subFilters && (
+        <select
+          className="fusion-select"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          {subFilters.map((f) => (
+            <option key={f.value} value={f.value}>{f.label}</option>
+          ))}
+        </select>
       )}
 
       {/* Search */}
-      <div className="mb-3 relative">
+      <div style={{ position: 'relative', marginBottom: 10 }}>
+        <span style={{
+          position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+          color: 'var(--text-muted)', fontSize: 14, pointerEvents: 'none',
+        }}>🔍</span>
         <input
           type="text"
-          className="cozy-input pl-9"
-          placeholder="Search by Filipino or English name..."
+          className="fusion-input"
+          style={{ paddingLeft: 36 }}
+          placeholder="Search Filipino or English name…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-retreat-textLight text-sm">🔍</span>
       </div>
 
       {/* Food list */}
-      <div className="max-h-52 overflow-y-auto rounded-cozy border-2 border-retreat-border mb-4"
-           style={{ background: '#EFE3C0' }}>
+      <div className="fusion-food-list">
         {loading ? (
-          <div className="p-4 text-center text-retreat-textMuted text-sm">
-            <span className="animate-pulse">Loading foods... 🌱</span>
+          <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
+            Loading foods… 🌱
           </div>
         ) : foods.length === 0 ? (
-          <div className="p-4 text-center text-retreat-textMuted text-sm">
+          <div style={{ padding: 20, textAlign: 'center', color: 'var(--text-muted)', fontSize: 13 }}>
             No foods found. Try a different search! 🍂
           </div>
         ) : (
-          foods.map((food) => (
-            <button
-              key={food.id}
-              onClick={() => {
-                setSelectedFood(food)
-                setGrams(String(food.weight_g || food.amount_ml || ''))
-              }}
-              className={`w-full text-left px-3 py-2 border-b border-retreat-borderLight transition-all ${
-                selectedFood?.id === food.id
-                  ? 'bg-retreat-green text-white'
-                  : 'hover:bg-retreat-panel text-retreat-text'
-              }`}
-              style={{ borderBottom: '1px solid #DEC88A' }}
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="font-semibold text-sm block">{food.english_name}</span>
-                  <span className={`text-xs ${selectedFood?.id === food.id ? 'text-green-100' : 'text-retreat-textMuted'}`}>
+          foods.map((food) => {
+            const base = food.weight_g || food.amount_ml || 0
+            const unit = food.amount_ml ? 'ml' : 'g'
+            const isSel = selectedFood?.id === food.id
+            return (
+              <div
+                key={food.id}
+                className={`fusion-food-row ${isSel ? 'selected' : ''}`}
+                onClick={() => {
+                  setSelectedFood(food)
+                  setGrams(String(food.weight_g || food.amount_ml || ''))
+                }}
+              >
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: isSel ? 'var(--accent)' : 'var(--text)' }}>
+                    {food.english_name}
+                  </p>
+                  <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 1 }}>
                     {food.filipino_name}
-                  </span>
+                    {food.household_measure ? ` · ${food.household_measure}` : ''}
+                  </p>
                 </div>
-                <div className="text-right">
-                  <span className={`text-xs font-bold block ${selectedFood?.id === food.id ? 'text-yellow-200' : 'text-retreat-amber'}`}>
-                    {food.calories} kcal
-                  </span>
-                  <span className={`text-xs ${selectedFood?.id === food.id ? 'text-green-200' : 'text-retreat-textLight'}`}>
-                    per {food.weight_g || food.amount_ml}{food.amount_ml ? 'ml' : 'g'}
-                  </span>
+                <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--accent)' }}>{food.calories}</p>
+                  <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>kcal/{base}{unit}</p>
                 </div>
               </div>
-              {food.household_measure && (
-                <span className={`text-xs ${selectedFood?.id === food.id ? 'text-green-100' : 'text-retreat-textLight'}`}>
-                  ≈ {food.household_measure}
-                </span>
-              )}
-            </button>
-          ))
+            )
+          })
         )}
       </div>
 
       {/* Gram input + preview */}
       {selectedFood && (
-        <div className="bg-retreat-amberBg border-2 border-retreat-borderLight rounded-cozy p-3 mb-3">
-          <p className="text-retreat-text font-semibold text-sm mb-2">
-            📝 {selectedFood.english_name}
+        <div style={{
+          background: '#F7F8FC', borderRadius: 'var(--radius-xs)',
+          padding: '12px 14px', marginBottom: 12,
+          border: '1.5px solid var(--border)',
+        }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text)', marginBottom: 10 }}>
+            📍 {selectedFood.english_name}
+            <span style={{ fontWeight: 400, color: 'var(--text-muted)', marginLeft: 6 }}>
+              (1 exchange = {baseWeight}{selectedFood.amount_ml ? 'ml' : 'g'})
+            </span>
           </p>
-          <div className="flex gap-2 items-center mb-2">
-            <label className="text-retreat-textMuted text-sm whitespace-nowrap">
+
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 10 }}>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>
               {selectedType === 'milk' ? 'Amount (ml):' : 'Grams (g):'}
-            </label>
+            </span>
             <input
               type="number"
-              className="cozy-input"
+              className="fusion-input"
+              style={{ maxWidth: 110 }}
               value={grams}
-              onChange={(e) => setGrams(e.target.value)}
               min="0"
               step="1"
               placeholder={`e.g. ${baseWeight}`}
-              style={{ maxWidth: '120px' }}
+              onChange={(e) => setGrams(e.target.value)}
             />
-            <span className="text-retreat-textMuted text-xs">
-              (1 exchange = {baseWeight}{selectedType === 'milk' ? 'ml' : 'g'})
-            </span>
           </div>
+
           {gramsNum > 0 && (
-            <div className="grid grid-cols-4 gap-2 mt-2">
+            <div className="fusion-preview">
               {[
-                { label: 'Carbs', val: previewCarbs, unit: 'g', color: 'text-amber-700' },
-                { label: 'Protein', val: previewProt, unit: 'g', color: 'text-blue-700' },
-                { label: 'Fat', val: previewFat, unit: 'g', color: 'text-red-700' },
-                { label: 'Calories', val: previewCal, unit: 'kcal', color: 'text-retreat-green font-bold' },
+                { label: 'Carbs',     val: previewCarb, unit: 'g',    color: '#F9A03F' },
+                { label: 'Protein',   val: previewProt, unit: 'g',    color: '#5B9BD5' },
+                { label: 'Fat',       val: previewFat,  unit: 'g',    color: '#E85555' },
+                { label: 'Calories',  val: previewCal,  unit: 'kcal', color: 'var(--accent)' },
               ].map((n) => (
-                <div key={n.label} className="bg-white rounded-cozy p-2 text-center border border-retreat-borderLight">
-                  <div className={`text-sm font-bold ${n.color}`}>{n.val.toFixed(1)}<span className="text-xs font-normal">{n.unit}</span></div>
-                  <div className="text-xs text-retreat-textMuted">{n.label}</div>
+                <div key={n.label} className="fusion-preview-cell">
+                  <div className="fusion-preview-val" style={{ color: n.color }}>
+                    {n.unit === 'kcal' ? Math.round(n.val) : n.val.toFixed(1)}
+                    <span style={{ fontSize: 10, fontWeight: 400, color: 'var(--text-muted)' }}>{n.unit}</span>
+                  </div>
+                  <div className="fusion-preview-unit">{n.label}</div>
                 </div>
               ))}
             </div>
@@ -256,10 +256,10 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
       )}
 
       <button
-        className="cozy-btn w-full"
+        className="fusion-btn"
+        style={{ width: '100%' }}
         onClick={handleAdd}
         disabled={!selectedFood || !grams || parseFloat(grams) <= 0}
-        style={{ opacity: (!selectedFood || !grams || parseFloat(grams) <= 0) ? 0.5 : 1 }}
       >
         ✨ Add to Log
       </button>

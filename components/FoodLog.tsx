@@ -17,11 +17,11 @@ export interface LogEntry {
 }
 
 const TYPE_CONFIG: Record<FoodType, { emoji: string; color: string; label: string }> = {
-  rice: { emoji: '🍚', color: '#D4860A', label: 'Rice' },
-  meat: { emoji: '🥩', color: '#C0392B', label: 'Meat' },
-  vegetable: { emoji: '🥦', color: '#4A7C59', label: 'Vegetable' },
-  milk: { emoji: '🥛', color: '#2471A3', label: 'Milk' },
-  fruit: { emoji: '🍎', color: '#6C3483', label: 'Fruit' },
+  rice:      { emoji: '🍚', color: '#F9A03F', label: 'Rice' },
+  meat:      { emoji: '🥩', color: '#E85555', label: 'Meat' },
+  vegetable: { emoji: '🥦', color: '#4CAF82', label: 'Vegetable' },
+  milk:      { emoji: '🥛', color: '#5B9BD5', label: 'Milk' },
+  fruit:     { emoji: '🍎', color: '#9B59B6', label: 'Fruit' },
 }
 
 interface FoodLogProps {
@@ -32,75 +32,83 @@ interface FoodLogProps {
 export default function FoodLog({ entries, onRemove }: FoodLogProps) {
   if (entries.length === 0) {
     return (
-      <div className="cozy-panel text-center py-10">
-        <div className="text-5xl mb-3">🌾</div>
-        <p className="text-retreat-textMuted font-cozy text-sm">Your food log is empty.</p>
-        <p className="text-retreat-textLight text-xs mt-1">Add foods to track your nutrition!</p>
+      <div style={{ textAlign: 'center', padding: '32px 16px' }}>
+        <div style={{ fontSize: 40, marginBottom: 10 }}>🌾</div>
+        <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>Your food log is empty.</p>
+        <p style={{ color: 'var(--text-light)', fontSize: 12, marginTop: 4 }}>
+          Add foods to track your nutrition!
+        </p>
       </div>
     )
   }
 
   return (
-    <div className="cozy-panel">
-      <h2 className="text-retreat-text font-cozy text-lg font-bold mb-4 flex items-center gap-2">
-        📋 Food Log
-        <span className="text-xs font-normal text-retreat-textMuted ml-1 bg-retreat-panel px-2 py-0.5 rounded-full border border-retreat-borderLight">
-          {entries.length} item{entries.length !== 1 ? 's' : ''}
-        </span>
-      </h2>
-      <div className="space-y-2">
-        {entries.map((entry) => {
-          const cfg = TYPE_CONFIG[entry.food_type]
-          const exchanges = entry.grams / entry.base_weight
-          return (
-            <div
-              key={entry.id}
-              className="flex items-start gap-3 rounded-cozy p-3 border border-retreat-borderLight hover:border-retreat-border transition-all"
-              style={{ background: '#EFE3C0' }}
-            >
-              <span className="text-2xl mt-0.5">{cfg.emoji}</span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-retreat-text text-sm">{entry.food_name}</span>
-                  <span
-                    className="cozy-badge text-xs"
-                    style={{
-                      background: `${cfg.color}18`,
-                      borderColor: `${cfg.color}50`,
-                      color: cfg.color,
-                      padding: '2px 8px',
-                      borderRadius: '10px',
-                      border: '1.5px solid',
-                    }}
-                  >
-                    {cfg.label}
-                  </span>
-                </div>
-                <div className="text-xs text-retreat-textMuted mt-0.5">{entry.filipino_name}</div>
-                <div className="flex flex-wrap gap-2 mt-1 text-xs">
-                  <span className="text-retreat-textMuted">
-                    {entry.grams}{entry.unit} ({exchanges.toFixed(2)} exchange{exchanges !== 1 ? 's' : ''})
-                  </span>
-                  <span className="text-amber-700">C: {entry.carbohydrate_g.toFixed(1)}g</span>
-                  <span className="text-blue-700">P: {entry.protein_g.toFixed(1)}g</span>
-                  <span className="text-red-700">F: {entry.fat_g.toFixed(1)}g</span>
-                </div>
-              </div>
-              <div className="text-right flex-shrink-0">
-                <div className="font-bold text-retreat-green text-sm">{Math.round(entry.calories)}</div>
-                <div className="text-xs text-retreat-textMuted">kcal</div>
-                <button
-                  onClick={() => onRemove(entry.id)}
-                  className="mt-1 text-xs text-red-500 hover:text-red-700 transition-colors"
-                  title="Remove entry"
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 340, overflowY: 'auto', paddingRight: 2 }}>
+      {entries.map((entry) => {
+        const cfg = TYPE_CONFIG[entry.food_type]
+        const exchanges = (entry.grams / entry.base_weight).toFixed(2)
+
+        return (
+          <div key={entry.id} className="fusion-log-row">
+            {/* Icon */}
+            <span style={{ fontSize: 22, flexShrink: 0, marginTop: 2 }}>{cfg.emoji}</span>
+
+            {/* Info */}
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text)' }}>
+                  {entry.food_name}
+                </span>
+                <span
+                  className="fusion-badge"
+                  style={{
+                    background: `${cfg.color}18`,
+                    color: cfg.color,
+                    border: `1.5px solid ${cfg.color}40`,
+                  }}
                 >
-                  ✕
-                </button>
+                  {cfg.label}
+                </span>
+              </div>
+              <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
+                {entry.filipino_name} · {entry.grams}{entry.unit} ({exchanges} exc)
+              </p>
+              <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#F9A03F' }}>
+                  C {entry.carbohydrate_g.toFixed(1)}g
+                </span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#5B9BD5' }}>
+                  P {entry.protein_g.toFixed(1)}g
+                </span>
+                <span style={{ fontSize: 11, fontWeight: 600, color: '#E85555' }}>
+                  F {entry.fat_g.toFixed(1)}g
+                </span>
               </div>
             </div>
-          )
-        })}
-      </div>
+
+            {/* Calories + remove */}
+            <div style={{ textAlign: 'right', flexShrink: 0 }}>
+              <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent)' }}>
+                {Math.round(entry.calories)}
+              </p>
+              <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>kcal</p>
+              <button
+                onClick={() => onRemove(entry.id)}
+                title="Remove"
+                style={{
+                  background: 'none', border: 'none', cursor: 'pointer',
+                  fontSize: 13, color: 'var(--text-light)',
+                  marginTop: 4, padding: 0, transition: 'color 0.1s',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#E85555')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-light)')}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

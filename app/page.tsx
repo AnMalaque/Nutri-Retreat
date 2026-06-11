@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
@@ -20,29 +20,50 @@ interface FoodItem {
   calories: number
 }
 
+const NAV_ITEMS = [
+  { icon: '📊', label: 'Dashboard',    active: true  },
+  { icon: '📋', label: 'FEL',          active: false },
+  { icon: '🕐', label: 'Food History', active: false },
+  { icon: '🎯', label: 'Meal Goals',   active: false },
+]
+
+const EXCHANGE_REF = [
+  { emoji: '🥦', label: 'Vegetable',        val: '3C·1P·0F = 16'   },
+  { emoji: '🍎', label: 'Fruit',            val: '10C·0P·0F = 40'  },
+  { emoji: '🍚', label: 'Rice A (Low P)',    val: '23C·0P·0F = 92'  },
+  { emoji: '🍚', label: 'Rice B (Med P)',    val: '23C·2P·0F = 100' },
+  { emoji: '🍚', label: 'Rice C (High P)',   val: '23C·4P·0F = 108' },
+  { emoji: '🥛', label: 'Milk (Whole)',      val: '12C·8P·10F = 170'},
+  { emoji: '🥛', label: 'Milk (Low Fat)',    val: '12C·8P·5F = 125' },
+  { emoji: '🥛', label: 'Milk (Skim)',       val: '12C·8P·0F = 80'  },
+  { emoji: '🥩', label: 'Meat (Low Fat)',    val: '0C·8P·1F = 41'   },
+  { emoji: '🥩', label: 'Meat (Med Fat)',    val: '0C·8P·6F = 86'   },
+  { emoji: '🥩', label: 'Meat (High Fat)',   val: '0C·8P·10F = 122' },
+]
+
 export default function Home() {
   const [entries, setEntries] = useState<LogEntry[]>([])
 
   const handleAddFood = useCallback((food: FoodItem, grams: number, type: FoodType) => {
     const baseWeight = food.weight_g || food.amount_ml || 1
-    const ratio = grams / baseWeight
-    const carbG = (food.carbohydrate_g || 0) * ratio
-    const protG = (food.protein_g || 0) * ratio
-    const fatG = (food.fat_g || 0) * ratio
-    const totalCal = (carbG * 4) + (protG * 4) + (fatG * 9)
+    const ratio      = grams / baseWeight
+    const carbG      = (food.carbohydrate_g || 0) * ratio
+    const protG      = (food.protein_g      || 0) * ratio
+    const fatG       = (food.fat_g          || 0) * ratio
+    const totalCal   = carbG * 4 + protG * 4 + fatG * 9
 
     const entry: LogEntry = {
-      id: `${Date.now()}-${Math.random()}`,
-      food_type: type,
-      food_name: food.english_name,
-      filipino_name: food.filipino_name,
+      id:             `${Date.now()}-${Math.random()}`,
+      food_type:      type,
+      food_name:      food.english_name,
+      filipino_name:  food.filipino_name,
       grams,
-      base_weight: baseWeight,
+      base_weight:    baseWeight,
       carbohydrate_g: carbG,
-      protein_g: protG,
-      fat_g: fatG,
-      calories: totalCal,
-      unit: type === 'milk' ? 'ml' : 'g',
+      protein_g:      protG,
+      fat_g:          fatG,
+      calories:       totalCal,
+      unit:           type === 'milk' ? 'ml' : 'g',
     }
     setEntries((prev) => [...prev, entry])
   }, [])
@@ -57,95 +78,240 @@ export default function Home() {
 
   const totals = entries.reduce(
     (acc, e) => ({
-      carbs: acc.carbs + e.carbohydrate_g,
-      protein: acc.protein + e.protein_g,
-      fat: acc.fat + e.fat_g,
+      carbs:    acc.carbs    + e.carbohydrate_g,
+      protein:  acc.protein  + e.protein_g,
+      fat:      acc.fat      + e.fat_g,
       calories: acc.calories + e.calories,
     }),
     { carbs: 0, protein: 0, fat: 0, calories: 0 }
   )
 
+  const totalKcal = Math.round(totals.calories)
+
   return (
-    <div className="min-h-screen" style={{ fontFamily: "'Trebuchet MS', system-ui, sans-serif" }}>
-      <header className="cozy-header px-4 py-4 sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="text-3xl">🌿</div>
-            <div>
-              <h1 className="text-retreat-surface font-cozy text-lg font-bold tracking-wide">
-                Nutri Retreat
-              </h1>
-              <p className="text-retreat-borderLight text-xs">Filipino Food Exchange Tracker</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="text-right hidden sm:block">
-              <div className="text-retreat-surface font-bold text-xl">
-                {Math.round(totals.calories)}
-              </div>
-              <div className="text-retreat-borderLight text-xs">kcal today</div>
-            </div>
-            {entries.length > 0 && (
-              <button
-                onClick={handleClear}
-                className="cozy-btn cozy-btn-danger text-xs px-3 py-2"
-                style={{ fontSize: '11px' }}
-              >
-                🗑 Clear
-              </button>
-            )}
+    <div className="fusion-layout">
+
+      {/* ── SIDEBAR ── */}
+      <aside className="fusion-sidebar">
+        {/* Logo */}
+        <div className="fusion-logo">
+          <div className="fusion-logo-icon">🥗</div>
+          <div>
+            <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--text)' }}>NutriTrack</p>
+            <p style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 1 }}>Filipino FEL</p>
           </div>
         </div>
-      </header>
 
-      <div className="text-center py-3 px-4" style={{ background: '#EFE3C0', borderBottom: '2px solid #C8A96E' }}>
-        <p className="text-retreat-textMuted text-xs">
-          🌾 Based on the Filipino Food Exchange Lists (FEL) &nbsp;·&nbsp; Carbs × 4 &nbsp;·&nbsp; Protein × 4 &nbsp;·&nbsp; Fat × 9 &nbsp;=&nbsp; kcal
-        </p>
+        {/* Nav */}
+        <nav className="fusion-nav">
+          <p className="fusion-nav-label">Main Menu</p>
+          {NAV_ITEMS.map((item) => (
+            <div key={item.label} className={`fusion-nav-item ${item.active ? 'active' : ''}`}>
+              <span style={{ fontSize: 16 }}>{item.icon}</span>
+              {item.label}
+            </div>
+          ))}
+        </nav>
+      </aside>
+
+      {/* ── MAIN ── */}
+      <div className="fusion-main">
+
+        {/* FLOATING TIME */}
+        <FloatingTime />
+
+        {/* CONTENT */}
+        <main style={{ padding: '24px 28px' }}>
+
+          {/* ── HERO CARD ── */}
+          <div className="fusion-hero" style={{ marginBottom: 20 }}>
+            <div style={{
+              width: 56, height: 56, borderRadius: 16, flexShrink: 0,
+              background: 'linear-gradient(135deg, #FF8C5A, #FF5722)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 26, zIndex: 1,
+            }}>🥗</div>
+
+            <div style={{ zIndex: 1 }}>
+              <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>Today&apos;s Nutrition</p>
+              <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 3 }}>
+                Food Exchange Tracker · Today&apos;s Progress
+              </p>
+            </div>
+
+            <div style={{ marginLeft: 'auto', textAlign: 'right', zIndex: 1, flexShrink: 0 }}>
+              <p style={{ fontSize: 40, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
+                {totalKcal}
+              </p>
+              <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>kcal today</p>
+              {entries.length > 0 && (
+                <button
+                  onClick={handleClear}
+                  className="fusion-btn-ghost"
+                  style={{ marginTop: 8, fontSize: 11, padding: '5px 12px' }}
+                >
+                  🗑 Clear All
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* ── MACRO ROW + RIGHT PANEL (2-col grid) ── */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 290px', gap: 20, alignItems: 'start' }}>
+
+            {/* LEFT: macro cards + food search + log */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* Macro cards row */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+                {/* MacroSummary renders the 3 stat cards + the Atwater card */}
+                <MacroSummary totals={totals} />
+              </div>
+
+              {/* Food search + log side by side */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, alignItems: 'start' }}>
+
+                {/* SEARCH */}
+                <FoodSearch onAddFood={handleAddFood} />
+
+                {/* LOG */}
+                <div className="fusion-card">
+                  <h2 className="fusion-card-title">
+                    📋 Food Log
+                    <span style={{
+                      fontSize: 10, fontWeight: 600, background: '#F0F0F6',
+                      color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 20, marginLeft: 'auto',
+                    }}>
+                      {entries.length} item{entries.length !== 1 ? 's' : ''}
+                    </span>
+                  </h2>
+                  <FoodLog entries={entries} onRemove={handleRemove} />
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT PANEL */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+              {/* Atwater — rendered by MacroSummary, pulled out here via a wrapper */}
+              <AtwaterPanel totals={totals} />
+
+              {/* Exchange Reference */}
+              <div className="fusion-card">
+                <h3 className="fusion-card-title">📖 Exchange Reference</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  {EXCHANGE_REF.map((item) => (
+                    <div key={item.label} className="fusion-exch-row">
+                      <span style={{ fontSize: 12, color: 'var(--text)', fontWeight: 500 }}>
+                        {item.emoji} {item.label}
+                      </span>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
+                        {item.val}
+                      </span>
+                    </div>
+                  ))}
+                  <p style={{ fontSize: 10, color: 'var(--text-light)', textAlign: 'center', marginTop: 6 }}>
+                    C=carbs · P=protein · F=fat (g) · kcal/exchange
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </main>
+
+        {/* FOOTER */}
+        <footer style={{
+          textAlign: 'center', padding: '20px 28px',
+          borderTop: '1px solid var(--border)',
+          fontSize: 12, color: 'var(--text-muted)',
+        }}>
+          🌿 Nutri Retreat · Filipino Food Exchange Lists · Atwater general factors (C×4, P×4, F×9)
+        </footer>
       </div>
+    </div>
+  )
+}
 
-      <main className="max-w-5xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="lg:col-span-2 space-y-5">
-            <FoodSearch onAddFood={handleAddFood} />
-            <FoodLog entries={entries} onRemove={handleRemove} />
-          </div>
-          <div className="space-y-5">
-            <MacroSummary totals={totals} />
-            <div className="cozy-panel">
-              <h3 className="text-retreat-text font-cozy text-sm font-bold mb-3 flex items-center gap-1">
-                📖 Exchange Reference
-              </h3>
-              <div className="space-y-1.5 text-xs">
-                {[
-                  { emoji: '🥦', label: 'Vegetable', info: '3C · 1P · 0F = 16 kcal' },
-                  { emoji: '🍎', label: 'Fruit', info: '10C · 0P · 0F = 40 kcal' },
-                  { emoji: '🍚', label: 'Rice A (Low Prot)', info: '23C · 0P · 0F = 92 kcal' },
-                  { emoji: '🍚', label: 'Rice B (Med Prot)', info: '23C · 2P · 0F = 100 kcal' },
-                  { emoji: '🍚', label: 'Rice C (High Prot)', info: '23C · 4P · 0F = 108 kcal' },
-                  { emoji: '🥛', label: 'Milk (Whole)', info: '12C · 8P · 10F = 170 kcal' },
-                  { emoji: '🥛', label: 'Milk (Low Fat)', info: '12C · 8P · 5F = 125 kcal' },
-                  { emoji: '🥛', label: 'Milk (Skim)', info: '12C · 8P · 0F = 80 kcal' },
-                  { emoji: '🥩', label: 'Meat (Low Fat)', info: '0C · 8P · 1F = 41 kcal' },
-                  { emoji: '🥩', label: 'Meat (Med Fat)', info: '0C · 8P · 6F = 86 kcal' },
-                  { emoji: '🥩', label: 'Meat (High Fat)', info: '0C · 8P · 10F = 122 kcal' },
-                ].map((item) => (
-                  <div key={item.label} className="flex justify-between text-retreat-textMuted rounded px-2 py-1 hover:bg-retreat-panel">
-                    <span>{item.emoji} {item.label}</span>
-                    <span className="font-mono text-retreat-text">{item.info}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-2 text-xs text-retreat-textLight text-center">C=carbs · P=protein · F=fat (grams)</div>
-            </div>
-          </div>
+/* Inline Atwater panel — avoids MacroSummary rendering it inside the macro-cards grid */
+function AtwaterPanel({ totals }: { totals: { carbs: number; protein: number; fat: number; calories: number } }) {
+  const carbCal  = totals.carbs   * 4
+  const protCal  = totals.protein * 4
+  const fatCal   = totals.fat     * 9
+  const total    = carbCal + protCal + fatCal
+
+  const rows = [
+    { label: `Carbs ${totals.carbs.toFixed(1)}g × 4`,     val: carbCal, color: '#F9A03F' },
+    { label: `Protein ${totals.protein.toFixed(1)}g × 4`, val: protCal, color: '#5B9BD5' },
+    { label: `Fat ${totals.fat.toFixed(1)}g × 9`,         val: fatCal,  color: '#E85555' },
+  ]
+
+  return (
+    <div className="fusion-card">
+      <h3 className="fusion-card-title">🔥 Energy Breakdown</h3>
+      {rows.map((r) => (
+        <div key={r.label} style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: '6px 0', borderBottom: '1px solid var(--border)', fontSize: 12,
+        }}>
+          <span style={{ color: 'var(--text-muted)' }}>{r.label}</span>
+          <span style={{ fontWeight: 600, color: r.color }}>{Math.round(r.val)} kcal</span>
         </div>
-      </main>
+      ))}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between',
+        padding: '8px 0 0', fontSize: 13, fontWeight: 700,
+      }}>
+        <span style={{ color: 'var(--text)' }}>Total</span>
+        <span style={{ color: 'var(--accent)' }}>{Math.round(total)} kcal</span>
+      </div>
+    </div>
+  )
+}
 
-      <footer className="text-center py-5 text-retreat-textLight text-xs border-t-2 border-retreat-borderLight mt-4">
-        <p>🌿 Nutri Retreat · Built with Filipino Food Exchange Lists</p>
-        <p className="mt-1 text-retreat-textMuted">Energy calculated using the Atwater general factors</p>
-      </footer>
+/* Floating clock pill — bottom-right corner */
+function FloatingTime() {
+  const [now, setNow] = useState(new Date())
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  const timeStr = now.toLocaleTimeString('en-PH', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
+  const dateStr = now.toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: 24,
+      right: 28,
+      zIndex: 100,
+      background: 'var(--card)',
+      borderRadius: 16,
+      boxShadow: '0 4px 24px rgba(255, 107, 53, 0.15), 0 1px 6px rgba(0,0,0,0.08)',
+      padding: '10px 18px',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+      gap: 1,
+      border: '1px solid rgba(255,107,53,0.12)',
+      backdropFilter: 'blur(12px)',
+    }}>
+      <span style={{
+        fontSize: 20,
+        fontWeight: 700,
+        color: 'var(--accent)',
+        letterSpacing: '-0.5px',
+        fontVariantNumeric: 'tabular-nums',
+        lineHeight: 1,
+      }}>{timeStr}</span>
+      <span style={{
+        fontSize: 10,
+        color: 'var(--text-muted)',
+        fontWeight: 500,
+      }}>{dateStr}</span>
     </div>
   )
 }

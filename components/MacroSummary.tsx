@@ -14,77 +14,84 @@ interface MacroSummaryProps {
 export default function MacroSummary({ totals }: MacroSummaryProps) {
   const carbCal = totals.carbs * 4
   const protCal = totals.protein * 4
-  const fatCal = totals.fat * 9
+  const fatCal  = totals.fat * 9
   const totalFromMacros = carbCal + protCal + fatCal
 
   const carbPct = totalFromMacros > 0 ? (carbCal / totalFromMacros) * 100 : 0
   const protPct = totalFromMacros > 0 ? (protCal / totalFromMacros) * 100 : 0
-  const fatPct = totalFromMacros > 0 ? (fatCal / totalFromMacros) * 100 : 0
+  const fatPct  = totalFromMacros > 0 ? (fatCal  / totalFromMacros) * 100 : 0
+
+  const macros = [
+    {
+      key: 'carbs',
+      label: 'Carbohydrates',
+      emoji: '🌾',
+      grams: totals.carbs,
+      kcal: carbCal,
+      pct: carbPct,
+      cssClass: 'carbs',
+      barColor: 'var(--carb)',
+      pctColor: '#F9A03F',
+    },
+    {
+      key: 'prot',
+      label: 'Protein',
+      emoji: '💪',
+      grams: totals.protein,
+      kcal: protCal,
+      pct: protPct,
+      cssClass: 'prot',
+      barColor: 'var(--prot)',
+      pctColor: '#5B9BD5',
+    },
+    {
+      key: 'fat',
+      label: 'Fat',
+      emoji: '🧈',
+      grams: totals.fat,
+      kcal: fatCal,
+      pct: fatPct,
+      cssClass: 'fat',
+      barColor: 'var(--fat)',
+      pctColor: '#E85555',
+    },
+  ]
 
   return (
-    <div className="cozy-panel">
-      <h2 className="text-retreat-text font-cozy text-lg font-bold mb-4 flex items-center gap-2">
-        🔥 Today&apos;s Totals
-      </h2>
-
-      {/* Big calorie number */}
-      <div className="text-center mb-5 bg-retreat-panel rounded-cozy-lg p-4 border-2 border-retreat-border"
-           style={{ boxShadow: 'inset 2px 2px 6px rgba(90,62,27,0.12)' }}>
-        <div className="text-retreat-textMuted text-xs uppercase tracking-widest mb-1">Total Energy</div>
-        <div className="text-retreat-text font-cozy" style={{ fontSize: '48px', fontWeight: 'bold', lineHeight: 1 }}>
-          {Math.round(totals.calories)}
-        </div>
-        <div className="text-retreat-amber font-semibold text-sm mt-1">kcal</div>
-      </div>
-
-      {/* Macro bars */}
-      <div className="space-y-3 mb-4">
-        {[
-          { label: 'Carbohydrates', grams: totals.carbs, kcal: carbCal, pct: carbPct, color: '#D4860A', bg: '#FEF3DC', emoji: '🌾' },
-          { label: 'Protein', grams: totals.protein, kcal: protCal, pct: protPct, color: '#2471A3', bg: '#EBF5FB', emoji: '💪' },
-          { label: 'Fat', grams: totals.fat, kcal: fatCal, pct: fatPct, color: '#C0392B', bg: '#FDECEA', emoji: '🧈' },
-        ].map((macro) => (
-          <div key={macro.label} className="rounded-cozy p-2" style={{ background: macro.bg, border: `1.5px solid ${macro.color}30` }}>
-            <div className="flex justify-between items-center mb-1">
-              <span className="text-retreat-text text-sm font-semibold">{macro.emoji} {macro.label}</span>
-              <div className="text-right">
-                <span className="font-bold text-sm" style={{ color: macro.color }}>{macro.grams.toFixed(1)}g</span>
-                <span className="text-retreat-textMuted text-xs ml-1">({Math.round(macro.kcal)} kcal)</span>
-              </div>
+    <>
+      {/* Three macro stat cards — rendered as a row in page.tsx */}
+      {macros.map((m) => (
+        <div key={m.key} className={`fusion-macro-card ${m.cssClass}`}>
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <p style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500, marginBottom: 4 }}>
+                {m.label}
+              </p>
+              <p style={{ fontSize: 28, fontWeight: 700, color: 'var(--text)', lineHeight: 1 }}>
+                {m.grams.toFixed(1)}
+                <span style={{ fontSize: 13, color: 'var(--text-muted)', fontWeight: 400 }}>g</span>
+              </p>
             </div>
-            <div className="h-3 bg-white rounded-full overflow-hidden border" style={{ borderColor: `${macro.color}40` }}>
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{ width: `${Math.min(100, macro.pct)}%`, background: macro.color }}
-              />
-            </div>
-            <div className="text-xs mt-0.5" style={{ color: macro.color }}>{macro.pct.toFixed(0)}% of calories</div>
+            <span style={{ fontSize: 22 }}>{m.emoji}</span>
           </div>
-        ))}
-      </div>
 
-      {/* Calorie formula breakdown */}
-      <div className="rounded-cozy p-3 bg-retreat-panel border border-retreat-borderLight">
-        <div className="text-retreat-textMuted text-xs mb-2 font-semibold uppercase tracking-wider">📐 Atwater Formula</div>
-        <div className="space-y-1 text-xs text-retreat-textMuted font-body">
-          <div className="flex justify-between">
-            <span>Carbs: {totals.carbs.toFixed(1)}g × 4</span>
-            <span className="text-amber-700 font-semibold">{carbCal.toFixed(0)} kcal</span>
+          {/* Progress bar */}
+          <div style={{ height: 6, background: '#F0F0F6', borderRadius: 10, overflow: 'hidden' }}>
+            <div
+              style={{
+                height: '100%',
+                width: `${Math.min(100, m.pct)}%`,
+                background: m.barColor,
+                borderRadius: 10,
+                transition: 'width 0.5s ease',
+              }}
+            />
           </div>
-          <div className="flex justify-between">
-            <span>Protein: {totals.protein.toFixed(1)}g × 4</span>
-            <span className="text-blue-700 font-semibold">{protCal.toFixed(0)} kcal</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Fat: {totals.fat.toFixed(1)}g × 9</span>
-            <span className="text-red-700 font-semibold">{fatCal.toFixed(0)} kcal</span>
-          </div>
-          <div className="border-t border-retreat-borderLight pt-1 flex justify-between font-bold text-retreat-text">
-            <span>Total</span>
-            <span>{totalFromMacros.toFixed(0)} kcal</span>
-          </div>
+          <p style={{ fontSize: 11, fontWeight: 600, color: m.pctColor, marginTop: 6 }}>
+            {m.pct.toFixed(0)}% of calories
+          </p>
         </div>
-      </div>
-    </div>
+      ))}
+    </>
   )
 }
