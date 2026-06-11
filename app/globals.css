@@ -380,7 +380,7 @@ body {
   max-height: 220px; overflow-y: auto;
   border-radius: var(--radius-xs);
   border: 1px solid var(--glass-border);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.01);
   margin-bottom: 14px;
 }
 .fusion-food-row {
