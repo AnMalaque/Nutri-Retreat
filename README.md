@@ -48,6 +48,7 @@ Track what you eat, see your macronutrient breakdown in real time, and understan
 | **Language** | [TypeScript 5](https://www.typescriptlang.org/) |
 | **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) + custom CSS design system |
 | **Typography** | [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts |
+| **Database** | [Supabase](https://supabase.com/) |
 | **Icons** | Emoji + inline SVG |
 
 ---
