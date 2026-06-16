@@ -85,24 +85,6 @@ npm start
 
 ---
 
-##  Project Structure
-
-```
-ancie-nutri-retreat/
-├── app/
-│   ├── page.tsx           # Main dashboard — layout, state, hero card
-│   ├── layout.tsx         # Root layout + font imports
-│   └── globals.css        # Full design system (fusion-* tokens & classes)
-├── components/
-│   ├── FoodSearch.tsx     # Search input, food type tabs, portion selector
-│   ├── FoodLog.tsx        # Scrollable log of added entries
-│   └── MacroSummary.tsx   # Carb / Protein / Fat stat cards
-└── public/
-    └── ...                # Static assets
-```
-
----
-
 ##  Food Exchange Reference
 
 The tracker uses the standard Philippine FEL exchange values:
