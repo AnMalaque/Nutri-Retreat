@@ -1,4 +1,5 @@
 'use client'
+import { toast } from 'sonner'
 import { useState, useCallback, useEffect } from 'react'
 import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
@@ -103,7 +104,7 @@ function DashboardContent() {
       await saveFoodLog(entries)
       if (confirm('Log saved to Food History! Clear the current log?')) setEntries([])
     } catch (err: any) {
-      alert(`Could not save log: ${err?.message ?? 'Unknown error'}`)
+      toast.error(`Could not save log: ${err?.message ?? 'Unknown error'}`)
     } finally {
       setSaving(false)
     }

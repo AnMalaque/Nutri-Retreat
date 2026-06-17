@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CubeField from "@/components/CubeField";
+import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
   title: "Nutri Retreat – Filipino Food Exchange Tracker",
@@ -25,6 +26,16 @@ export default function RootLayout({
       <body>
         <CubeField />
         {children}
+        <Toaster
+          position="top-right"
+          richColors
+          toastOptions={{
+            style: {
+              borderRadius: '16px',
+              backdropFilter: 'blur(16px)',
+            },
+          }}
+        />
       </body>
     </html>
   );

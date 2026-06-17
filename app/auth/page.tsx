@@ -1,5 +1,5 @@
 'use client'
-
+import { toast } from 'sonner'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Mail, Lock } from 'lucide-react'
@@ -29,11 +29,11 @@ export default function AuthPage() {
         router.push('/dashboard')
       } else {
         await signUp(email, password)
-        alert('Account created successfully!')
+        toast.success('Account created successfully!')
         router.push('/dashboard')
       }
     } catch (err: any) {
-      setError(err.message)
+      toast.error(err.message)
     } finally {
       setLoading(false)
     }
@@ -41,7 +41,7 @@ export default function AuthPage() {
 
   async function handleForgotPassword() {
     if (!email) {
-      setError('Enter your email above first')
+      toast.error('Enter your email above first')
       return
     }
 
@@ -50,9 +50,9 @@ export default function AuthPage() {
 
     try {
       await sendPasswordReset(email)
-      alert('Password reset email sent!')
+      toast.success('Password reset email sent!')
     } catch (err: any) {
-      setError(err.message)
+      toast.error(err.message)
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,5 @@
 'use client'
+import { toast } from 'sonner'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
@@ -135,7 +136,7 @@ function HistoryContent() {
           .filter(s => s.entries.length > 0) // remove empty sessions
       )
     } catch (err: any) {
-      alert(`Could not delete item: ${err?.message}`)
+      toast.error(`Could not delete item: ${err?.message}`)
     }
   }
 
@@ -146,7 +147,7 @@ function HistoryContent() {
       await deleteFoodLogsBySession(session.date)
       setSessions(prev => prev.filter(s => s.date !== session.date))
     } catch (err: any) {
-      alert(`Could not delete session: ${err?.message}`)
+      toast.error(`Could not delete session: ${err?.message}`)
     }
   }
 
@@ -159,7 +160,7 @@ function HistoryContent() {
       )
       setSessions([])
     } catch (err: any) {
-      alert(`Could not clear history: ${err?.message}`)
+      toast.error(`Could not clear history: ${err?.message}`)
     }
   }
 
