@@ -172,7 +172,7 @@ export default function Home() {
           <div className="fusion-hero" style={{ marginBottom: 20 }}>
             <div style={{
               width: 56, height: 56, borderRadius: 16, flexShrink: 0,
-              background: 'linear-gradient(135deg, #FF8C5A, #FF5722)',
+              background: 'linear-gradient(135deg, #C9AD7F, #A67C5B)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 26, zIndex: 1,
             }}>A</div>
