@@ -39,7 +39,7 @@ interface FoodItem {
 }
 
 const NAV_ITEMS = [
-  { icon: <LayoutDashboard />, label: 'Dashboard',    href: '/',        active: true  },
+  { icon: <LayoutDashboard />, label: 'Dashboard',    href: '/dashboard',        active: true  },
   { icon: <Hamburger />,       label: 'FEL',          href: '/fel',     active: false },
   { icon: <History />,         label: 'Food History', href: '/history', active: false },
   { icon: <Target />,          label: 'Meal Goals',   href: '#',        active: false },
@@ -186,7 +186,7 @@ export default function Home() {
             </div>
 
             <div style={{ marginLeft: 'auto', textAlign: 'center', zIndex: 1, flexShrink: 0 }}>
-              <p style={{ fontSize: 40, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
+              <p style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
                 {totalKcal}
               </p>
               <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 2 }}>kcal today</p>
