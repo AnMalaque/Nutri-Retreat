@@ -66,7 +66,7 @@ export default function Sidebar({ activePage }: SidebarProps) {
       </nav>
 
       {/* Logout button — pinned to bottom */}
-      <div style={{ padding: '16px 0', display: 'flex', justifyContent: 'center' }}>
+      <div style={{ padding: '1px 0', display: 'flex', justifyContent: 'center' }}>
         <button
           onClick={handleLogout}
           title="Log out"
