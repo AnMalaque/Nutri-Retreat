@@ -197,7 +197,7 @@ export default function HistoryPage() {
               <p style={{ fontSize: 13, color: 'var(--text-light)', marginBottom: 20 }}>
                 Add foods in the Dashboard and save your log to see it here.
               </p>
-              <Link href="/" style={{ textDecoration: 'none' }}>
+              <Link href="/dashboard" style={{ textDecoration: 'none' }}>
                 <button className="fusion-btn" style={{ padding: '10px 24px' }}>
                   Go to Dashboard
                 </button>
