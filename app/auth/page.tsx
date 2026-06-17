@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 import { Mail, Lock } from 'lucide-react'
+import { signIn, signUp, sendPasswordReset } from '@/lib/services/auth'
 
 export default function AuthPage() {
   const router = useRouter()
@@ -17,9 +17,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  async function handleSubmit(
-    e: React.FormEvent
-  ) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
     setLoading(true)
@@ -27,28 +25,11 @@ export default function AuthPage() {
 
     try {
       if (isLogin) {
-        const { error } =
-          await supabase.auth.signInWithPassword({
-            email,
-            password,
-          })
-
-        if (error) throw error
-
+        await signIn(email, password)
         router.push('/dashboard')
       } else {
-        const { error } =
-          await supabase.auth.signUp({
-            email,
-            password,
-          })
-
-        if (error) throw error
-
-        alert(
-          'Account created successfully!'
-        )
-
+        await signUp(email, password)
+        alert('Account created successfully!')
         router.push('/dashboard')
       }
     } catch (err: any) {
@@ -68,11 +49,7 @@ export default function AuthPage() {
     setError('')
 
     try {
-      const { error } =
-        await supabase.auth.resetPasswordForEmail(email)
-
-      if (error) throw error
-
+      await sendPasswordReset(email)
       alert('Password reset email sent!')
     } catch (err: any) {
       setError(err.message)
@@ -98,18 +75,13 @@ export default function AuthPage() {
           {isLogin ? 'Login' : 'Create Account'}
         </h1>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-3 mt-7"
-        >
+        <form onSubmit={handleSubmit} className="space-y-3 mt-7">
           <div className="relative">
             <input
               type="email"
               required
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
               className="fusion-input pill icon-right"
               placeholder="Email"
             />
@@ -124,9 +96,7 @@ export default function AuthPage() {
               required
               minLength={6}
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
               className="fusion-input pill icon-right"
               placeholder="Password"
             />
@@ -142,9 +112,7 @@ export default function AuthPage() {
                   type="checkbox"
                   className="fusion-checkbox"
                   checked={rememberMe}
-                  onChange={(e) =>
-                    setRememberMe(e.target.checked)
-                  }
+                  onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 Remember me
               </label>
@@ -179,14 +147,12 @@ export default function AuthPage() {
         </form>
 
         <button
-          onClick={() =>
-            setIsLogin(!isLogin)
-          }
+          onClick={() => setIsLogin(!isLogin)}
           className="fusion-auth-link mt-4"
         >
           {isLogin
-            ? <>Don&apos;t have an account? <strong>Register</strong></>
-            : <>Already have an account? <strong>Sign In</strong></>}
+            ? <><span>Don&apos;t have an account?</span> <strong>Register</strong></>
+            : <><span>Already have an account?</span> <strong>Sign In</strong></>}
         </button>
       </div>
     </main>
