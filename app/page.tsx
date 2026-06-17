@@ -169,12 +169,13 @@ export default function Home() {
         <main style={{ padding: '24px 28px' }}>
 
           {/* ── HERO CARD ── */}
-          <div className="fusion-hero" style={{ marginBottom: 20 }}>
+          <div className="fusion-hero" style={{ marginBottom: 24 }}>
             <div style={{
               width: 56, height: 56, borderRadius: 16, flexShrink: 0,
               background: 'linear-gradient(135deg, #C9AD7F, #A67C5B)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 26, zIndex: 1,
+              color: 'white', fontWeight: 700,
             }}>A</div>
 
             <div style={{ zIndex: 1 }}>
