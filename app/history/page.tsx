@@ -33,7 +33,7 @@ export interface HistorySession {
 const STORAGE_KEY = 'nutri-retreat:history'
 
 const NAV_ITEMS = [
-  { icon: <LayoutDashboard size={20} />, label: 'Dashboard',    href: '/',        active: false },
+  { icon: <LayoutDashboard size={20} />, label: 'Dashboard',    href: '/dashboard',        active: false },
   { icon: <Hamburger size={20} />,       label: 'FEL',          href: '/fel',     active: false },
   { icon: <History size={20} />,         label: 'Food History', href: '/history', active: true  },
   { icon: <Target size={20} />,          label: 'Meal Goals',   href: '#',        active: false },
