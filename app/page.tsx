@@ -1,5 +1,6 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
+import Link from 'next/link'
 import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
@@ -38,10 +39,10 @@ interface FoodItem {
 }
 
 const NAV_ITEMS = [
-  { icon: <LayoutDashboard />, label: 'Dashboard',    active: true  },
-  { icon: <Hamburger />, label: 'FEL',          active: false },
-  { icon: <History />, label: 'Food History', active: false },
-  { icon: <Target />, label: 'Meal Goals',   active: false },
+  { icon: <LayoutDashboard />, label: 'Dashboard',    href: '/',        active: true  },
+  { icon: <Hamburger />,       label: 'FEL',          href: '/fel',     active: false },
+  { icon: <History />,         label: 'Food History', href: '/history', active: false },
+  { icon: <Target />,          label: 'Meal Goals',   href: '#',        active: false },
 ]
 
 const EXCHANGE_REF = [
@@ -93,6 +94,29 @@ export default function Home() {
     if (confirm('Clear all food entries?')) setEntries([])
   }
 
+  const HISTORY_KEY = 'nutri-retreat:history'
+
+  const handleSaveLog = () => {
+    if (entries.length === 0) return
+    const now     = new Date()
+    const session = {
+      id:      now.toISOString(),
+      date:    now.toLocaleString('en-PH', {
+        weekday: 'short', year: 'numeric', month: 'short',
+        day: 'numeric', hour: '2-digit', minute: '2-digit',
+      }),
+      entries,
+      totals,
+    }
+    try {
+      const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
+      localStorage.setItem(HISTORY_KEY, JSON.stringify([...existing, session]))
+      if (confirm('Log saved to Food History! Clear the current log?')) setEntries([])
+    } catch {
+      alert('Could not save — localStorage may be full.')
+    }
+  }
+
   const totals = entries.reduce(
     (acc, e) => ({
       carbs:    acc.carbs    + e.carbohydrate_g,
@@ -119,14 +143,17 @@ export default function Home() {
   {/* Navigation */}
   <nav className="fusion-nav">
     {NAV_ITEMS.map((item) => (
-      <div
+      <Link
         key={item.label}
+        href={item.href ?? '#'}
         className={`fusion-nav-item ${item.active ? 'active' : ''}`}
+        title={item.label}
+        style={{ textDecoration: 'none' }}
       >
         <span className="fusion-nav-icon">
           {item.icon}
         </span>
-      </div>
+      </Link>
     ))}
   </nav>
 
@@ -202,6 +229,16 @@ export default function Home() {
                     }}>
                       {entries.length} item{entries.length !== 1 ? 's' : ''}
                     </span>
+                    {entries.length > 0 && (
+                      <button
+                        onClick={handleSaveLog}
+                        className="fusion-btn"
+                        style={{ fontSize: 11, padding: '4px 12px', marginLeft: 6 }}
+                        title="Save this log to Food History"
+                      >
+                        <History size={12} /> Save Log
+                      </button>
+                    )}
                   </h2>
                   <FoodLog entries={entries} onRemove={handleRemove} />
                 </div>
