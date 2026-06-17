@@ -38,6 +38,10 @@ html, body {
 }
 
 body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   background: linear-gradient(
     135deg,
     #2b1f0e 0%,
@@ -286,6 +290,190 @@ body {
   box-shadow: 0 0 0 3px rgba(201, 173, 127, 0.20);
 }
 .fusion-input::placeholder { color: var(--text-light); }
+.fusion-input.has-icon { padding-left: 44px; }
+
+/* ── AUTH SCREEN ── */
+.fusion-auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.fusion-auth-glow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.fusion-auth-glow span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+}
+.fusion-auth-glow span:nth-child(1) {
+  top: -80px; left: -60px; width: 320px; height: 320px;
+  background: radial-gradient(circle, var(--accent), transparent 70%);
+}
+.fusion-auth-glow span:nth-child(2) {
+  bottom: -100px; right: -60px; width: 360px; height: 360px;
+  background: radial-gradient(circle, var(--green), transparent 70%);
+}
+
+.fusion-auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 40px 36px;
+}
+
+.fusion-auth-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.fusion-auth-title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-align: center;
+  margin-top: 4px;
+}
+
+.fusion-auth-subtitle {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 6px;
+}
+
+/* pill-shaped inputs with icon on the right */
+.fusion-input.pill { border-radius: 999px; }
+.fusion-input.icon-right { padding-right: 44px; }
+
+.fusion-input-icon-r {
+  position: absolute;
+  right: 16px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  pointer-events: none;
+}
+
+.fusion-remember-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin: 2px 2px 4px;
+}
+.fusion-remember-row label {
+  display: flex; align-items: center; gap: 7px;
+  cursor: pointer;
+}
+.fusion-checkbox {
+  width: 14px; height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.fusion-link-sm {
+  background: none; border: none; padding: 0;
+  font-size: 12.5px; font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+  transition: color 0.15s;
+}
+.fusion-link-sm:hover { color: var(--accent-hover); }
+
+/* solid pill button — high-contrast against the glass card */
+.fusion-btn-solid {
+  width: 100%;
+  padding: 13px 24px;
+  border-radius: 999px;
+  background: #FBFAF1;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  color: var(--text);
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(166, 124, 91, 0.20);
+  transition: all 0.2s ease;
+}
+.fusion-btn-solid:hover:not(:disabled) {
+  background: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 22px rgba(166, 124, 91, 0.30);
+}
+.fusion-btn-solid:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
+
+.fusion-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+
+.fusion-input-icon {
+  position: absolute;
+  left: 14px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  pointer-events: none;
+}
+
+.fusion-error {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #B5524A;
+  background: rgba(181, 82, 74, 0.10);
+  border: 1px solid rgba(181, 82, 74, 0.25);
+  border-radius: var(--radius-xs);
+  padding: 10px 12px;
+}
+
+.fusion-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 22px 0 16px;
+  font-size: 11px;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.fusion-divider::before,
+.fusion-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--glass-border);
+}
+
+.fusion-auth-link {
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  transition: color 0.15s;
+}
+.fusion-auth-link:hover { color: var(--accent); }
+.fusion-auth-link strong {
+  color: var(--accent);
+  font-weight: 600;
+}
 
 .fusion-select {
   width: 100%;

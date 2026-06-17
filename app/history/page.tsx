@@ -20,6 +20,15 @@ import {
   TrendingUp,
 } from 'lucide-react'
 import type { LogEntry } from '@/components/FoodLog'
+import AuthGuard from '@/components/AuthGuard'
+
+export default function HistoryPage() {
+  return (
+    <AuthGuard>
+      <HistoryContent />
+    </AuthGuard>
+  )
+}
 
 // ── Types ──────────────────────────────────────────────────────────────────
 export interface HistorySession {
@@ -68,7 +77,7 @@ function clearAll(): void {
 }
 
 // ── Component ──────────────────────────────────────────────────────────────
-export default function HistoryPage() {
+function HistoryContent() {
   const [sessions, setSessions] = useState<HistorySession[]>([])
   const [expanded, setExpanded] = useState<Set<string>>(new Set())
   const [mounted, setMounted]   = useState(false)

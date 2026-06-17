@@ -19,7 +19,15 @@ import {
   AlertCircle,
   Flame,
 } from 'lucide-react'
+import AuthGuard from '@/components/AuthGuard'
 
+export default function FELPage() {
+  return (
+    <AuthGuard>
+      <FELContent />
+    </AuthGuard>
+  )
+}
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 type SortKey = 'english_name' | 'calories' | 'carbohydrate_g' | 'protein_g' | 'fat_g'
 type SortDir = 'asc' | 'desc'
@@ -96,7 +104,7 @@ const MILK_BADGE: Record<string, { label: string; color: string; bg: string }> =
   non_fat: { label: 'Skim',     color: '#C9AD7F', bg: 'rgba(201,173,127,0.12)' },
 }
 
-export default function FELPage() {
+function FELContent() {
   const [activeType, setActiveType]   = useState<FoodType>('rice')
   const [search, setSearch]           = useState('')
   const [filter, setFilter]           = useState('')

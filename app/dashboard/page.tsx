@@ -23,6 +23,15 @@ import {
   Fish, 
   Drumstick 
 } from 'lucide-react';
+import AuthGuard from '@/components/AuthGuard'
+
+export default function DashboardPage() {
+  return (
+    <AuthGuard>
+      <DashboardContent />
+    </AuthGuard>
+  )
+}
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 
 interface FoodItem {
@@ -59,7 +68,7 @@ const EXCHANGE_REF = [
   { icon: <Drumstick />,          label: 'Meat (High Fat)',   val: '0C·8P·10F = 122' },
 ]
 
-export default function Home() {
+function DashboardContent() {
   const [entries, setEntries] = useState<LogEntry[]>([])
 
   const handleAddFood = useCallback((food: FoodItem, grams: number, type: FoodType) => {

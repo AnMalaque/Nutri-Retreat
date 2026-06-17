@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
-import { Mail, Lock, Flame } from 'lucide-react'
+import { Mail, Lock } from 'lucide-react'
 
 export default function AuthPage() {
   const router = useRouter()
@@ -12,6 +12,7 @@ export default function AuthPage() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -57,108 +58,109 @@ export default function AuthPage() {
     }
   }
 
-  return (
-    <main className="min-h-screen flex items-center justify-center px-6">
+  async function handleForgotPassword() {
+    if (!email) {
+      setError('Enter your email above first')
+      return
+    }
 
-      {/* background glow */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 h-96 w-96 rounded-full blur-3xl opacity-20 bg-orange-300" />
-        <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full blur-3xl opacity-20 bg-pink-300" />
+    setLoading(true)
+    setError('')
+
+    try {
+      const { error } =
+        await supabase.auth.resetPasswordForEmail(email)
+
+      if (error) throw error
+
+      alert('Password reset email sent!')
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <main className="fusion-auth-wrap">
+
+      {/* ambient glow, tuned to the theme palette */}
+      <div className="fusion-auth-glow">
+        <span />
+        <span />
       </div>
 
-      <div className="fusion-card w-full max-w-md relative z-10">
+      <div className="fusion-card fusion-auth-card">
 
-        {/* logo */}
-        <div className="flex flex-col items-center mb-8">
-          <div
-            className="
-              h-16 w-16 rounded-2xl
-              flex items-center justify-center
-              text-white font-bold text-2xl
-              mb-4
-            "
-            style={{
-              background:
-                'linear-gradient(135deg,#C9AD7F,#A67C5B)',
-            }}
-          >
-            N
-          </div>
+        <p className="fusion-auth-eyebrow">Nutri Retreat</p>
 
-          <h1 className="text-3xl font-bold">
-            Nutri Retreat
-          </h1>
-
-          <p className="text-sm text-gray-500 mt-2">
-            Filipino Food Exchange Tracker
-          </p>
-        </div>
+        <h1 className="fusion-auth-title">
+          {isLogin ? 'Login' : 'Create Account'}
+        </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="space-y-4"
+          className="space-y-3 mt-7"
         >
-          <div>
-            <label className="text-sm font-medium">
-              Email
-            </label>
-
-            <div className="relative mt-1">
-              <Mail
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) =>
-                  setEmail(e.target.value)
-                }
-                className="
-                  w-full pl-10 pr-4 py-3
-                  rounded-xl
-                  border
-                  bg-white/70
-                "
-                placeholder="alex@email.com"
-              />
-            </div>
+          <div className="relative">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+              className="fusion-input pill icon-right"
+              placeholder="Email"
+            />
+            <span className="fusion-input-icon-r">
+              <Mail size={16} />
+            </span>
           </div>
 
-          <div>
-            <label className="text-sm font-medium">
-              Password
-            </label>
-
-            <div className="relative mt-1">
-              <Lock
-                size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              />
-
-              <input
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) =>
-                  setPassword(e.target.value)
-                }
-                className="
-                  w-full pl-10 pr-4 py-3
-                  rounded-xl
-                  border
-                  bg-white/70
-                "
-                placeholder="••••••••"
-              />
-            </div>
+          <div className="relative">
+            <input
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+              className="fusion-input pill icon-right"
+              placeholder="Password"
+            />
+            <span className="fusion-input-icon-r">
+              <Lock size={16} />
+            </span>
           </div>
+
+          {isLogin && (
+            <div className="fusion-remember-row">
+              <label>
+                <input
+                  type="checkbox"
+                  className="fusion-checkbox"
+                  checked={rememberMe}
+                  onChange={(e) =>
+                    setRememberMe(e.target.checked)
+                  }
+                />
+                Remember me
+              </label>
+
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="fusion-link-sm"
+              >
+                Forgot Password?
+              </button>
+            </div>
+          )}
 
           {error && (
-            <div className="text-sm text-red-500">
+            <div className="fusion-error">
               {error}
             </div>
           )}
@@ -166,27 +168,12 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={loading}
-            className="
-              w-full
-              py-3
-              rounded-xl
-              text-white
-              font-semibold
-              flex items-center
-              justify-center
-              gap-2
-            "
-            style={{
-              background:
-                'linear-gradient(135deg,#C9AD7F,#A67C5B)',
-            }}
+            className="fusion-btn-solid mt-2"
           >
-            <Flame size={18} />
-
             {loading
               ? 'Please wait...'
               : isLogin
-              ? 'Sign In'
+              ? 'Login'
               : 'Create Account'}
           </button>
         </form>
@@ -195,17 +182,11 @@ export default function AuthPage() {
           onClick={() =>
             setIsLogin(!isLogin)
           }
-          className="
-            w-full
-            mt-5
-            text-sm
-            text-center
-            text-gray-500
-          "
+          className="fusion-auth-link mt-4"
         >
           {isLogin
-            ? "Don't have an account? Register"
-            : 'Already have an account? Sign In'}
+            ? <>Don&apos;t have an account? <strong>Register</strong></>
+            : <>Already have an account? <strong>Sign In</strong></>}
         </button>
       </div>
     </main>
