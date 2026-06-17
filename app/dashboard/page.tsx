@@ -1,14 +1,11 @@
 'use client'
 import { useState, useCallback, useEffect } from 'react'
-import Link from 'next/link'
 import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
+import Sidebar from '@/components/Sidebar'
 import { 
-  LayoutDashboard,
-  Hamburger,
   History,
-  Target,
   Scroll,
   Flame,
   BookOpen,
@@ -47,25 +44,18 @@ interface FoodItem {
   calories: number
 }
 
-const NAV_ITEMS = [
-  { icon: <LayoutDashboard />, label: 'Dashboard',    href: '/dashboard',        active: true  },
-  { icon: <Hamburger />,       label: 'FEL',          href: '/fel',     active: false },
-  { icon: <History />,         label: 'Food History', href: '/history', active: false },
-  { icon: <Target />,          label: 'Meal Goals',   href: '#',        active: false },
-]
-
 const EXCHANGE_REF = [
-  { icon: <Broccoli />,         label: 'Vegetable',        val: '3C·1P·0F = 16'   },
+  { icon: <Broccoli />,      label: 'Vegetable',        val: '3C·1P·0F = 16'   },
   { icon: <Apple />,         label: 'Fruit',            val: '10C·0P·0F = 40'  },
-  { icon: <Wheat />,         label: 'Rice A (Low P)',    val: '23C·0P·0F = 92'  },
-  { icon: <Cookie />,         label: 'Rice B (Med P)',    val: '23C·2P·0F = 100' },
-  { icon: <FlameKindling />,         label: 'Rice C (High P)',   val: '23C·4P·0F = 108' },
-  { icon: <Milk />,          label: 'Milk (Whole)',      val: '12C·8P·10F = 170'},
-  { icon: <Droplets />,      label: 'Milk (Low Fat)',    val: '12C·8P·5F = 125' },
-  { icon: <Milk />,          label: 'Milk (Skim)',       val: '12C·8P·0F = 80'  },
-  { icon: <Beef />,          label: 'Meat (Low Fat)',    val: '0C·8P·1F = 41'   },
-  { icon: <Fish />,     label: 'Meat (Med Fat)',    val: '0C·8P·6F = 86'   },
-  { icon: <Drumstick />,          label: 'Meat (High Fat)',   val: '0C·8P·10F = 122' },
+  { icon: <Wheat />,         label: 'Rice A (Low P)',   val: '23C·0P·0F = 92'  },
+  { icon: <Cookie />,        label: 'Rice B (Med P)',   val: '23C·2P·0F = 100' },
+  { icon: <FlameKindling />, label: 'Rice C (High P)',  val: '23C·4P·0F = 108' },
+  { icon: <Milk />,          label: 'Milk (Whole)',     val: '12C·8P·10F = 170'},
+  { icon: <Droplets />,      label: 'Milk (Low Fat)',   val: '12C·8P·5F = 125' },
+  { icon: <Milk />,          label: 'Milk (Skim)',      val: '12C·8P·0F = 80'  },
+  { icon: <Beef />,          label: 'Meat (Low Fat)',   val: '0C·8P·1F = 41'   },
+  { icon: <Fish />,          label: 'Meat (Med Fat)',   val: '0C·8P·6F = 86'   },
+  { icon: <Drumstick />,     label: 'Meat (High Fat)',  val: '0C·8P·10F = 122' },
 ]
 
 function DashboardContent() {
@@ -141,32 +131,8 @@ function DashboardContent() {
   return (
     <div className="fusion-layout">
 
-     {/* ── SIDEBAR ── */}
-<aside className="fusion-sidebar">
-
-  {/* Logo */}
-  <div className="fusion-logo">
-    <div className="fusion-logo-icon">A</div>
-  </div>
-
-  {/* Navigation */}
-  <nav className="fusion-nav">
-    {NAV_ITEMS.map((item) => (
-      <Link
-        key={item.label}
-        href={item.href ?? '#'}
-        className={`fusion-nav-item ${item.active ? 'active' : ''}`}
-        title={item.label}
-        style={{ textDecoration: 'none' }}
-      >
-        <span className="fusion-nav-icon">
-          {item.icon}
-        </span>
-      </Link>
-    ))}
-  </nav>
-
-</aside>
+      {/* ── SIDEBAR ── */}
+      <Sidebar activePage="dashboard" />
 
       {/* ── MAIN ── */}
       <div className="fusion-main">
@@ -219,7 +185,6 @@ function DashboardContent() {
 
               {/* Macro cards row */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-                {/* MacroSummary renders the 3 stat cards + the Atwater card */}
                 <MacroSummary totals={totals} />
               </div>
 
@@ -258,7 +223,7 @@ function DashboardContent() {
             {/* RIGHT PANEL */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-              {/* Atwater — rendered by MacroSummary, pulled out here via a wrapper */}
+              {/* Atwater */}
               <AtwaterPanel totals={totals} />
 
               {/* Exchange Reference */}
@@ -299,12 +264,11 @@ function DashboardContent() {
   )
 }
 
-/* Inline Atwater panel — avoids MacroSummary rendering it inside the macro-cards grid */
 function AtwaterPanel({ totals }: { totals: { carbs: number; protein: number; fat: number; calories: number } }) {
-  const carbCal  = totals.carbs   * 4
-  const protCal  = totals.protein * 4
-  const fatCal   = totals.fat     * 9
-  const total    = carbCal + protCal + fatCal
+  const carbCal = totals.carbs   * 4
+  const protCal = totals.protein * 4
+  const fatCal  = totals.fat     * 9
+  const total   = carbCal + protCal + fatCal
 
   const rows = [
     { label: `Carbs ${totals.carbs.toFixed(1)}g × 4`,     val: carbCal, color: '#F9A03F' },
@@ -335,7 +299,6 @@ function AtwaterPanel({ totals }: { totals: { carbs: number; protein: number; fa
   )
 }
 
-/* Floating clock pill — bottom-right corner */
 function FloatingTime() {
   const [now, setNow] = useState(new Date())
 

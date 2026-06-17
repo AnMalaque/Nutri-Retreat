@@ -1,11 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Sidebar from '@/components/Sidebar'
 import {
-  LayoutDashboard,
-  Hamburger,
-  History,
-  Target,
   Wheat,
   Beef,
   Broccoli,
@@ -18,6 +15,7 @@ import {
   CalendarDays,
   ClipboardList,
   TrendingUp,
+  History,
 } from 'lucide-react'
 import type { LogEntry } from '@/components/FoodLog'
 import AuthGuard from '@/components/AuthGuard'
@@ -32,21 +30,14 @@ export default function HistoryPage() {
 
 // ── Types ──────────────────────────────────────────────────────────────────
 export interface HistorySession {
-  id: string          // ISO timestamp of when log was saved
-  date: string        // human-readable date label
+  id: string
+  date: string
   entries: LogEntry[]
   totals: { carbs: number; protein: number; fat: number; calories: number }
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'nutri-retreat:history'
-
-const NAV_ITEMS = [
-  { icon: <LayoutDashboard size={20} />, label: 'Dashboard',    href: '/dashboard',        active: false },
-  { icon: <Hamburger size={20} />,       label: 'FEL',          href: '/fel',     active: false },
-  { icon: <History size={20} />,         label: 'Food History', href: '/history', active: true  },
-  { icon: <Target size={20} />,          label: 'Meal Goals',   href: '#',        active: false },
-]
 
 const TYPE_CONFIG = {
   rice:      { icon: <Wheat size={14} />,    color: '#F9A03F', label: 'Rice'      },
@@ -83,7 +74,7 @@ function HistoryContent() {
   const [mounted, setMounted]   = useState(false)
 
   useEffect(() => {
-    setSessions(loadHistory().slice().reverse()) // newest first
+    setSessions(loadHistory().slice().reverse())
     setMounted(true)
   }, [])
 
@@ -105,7 +96,6 @@ function HistoryContent() {
     setSessions([])
   }
 
-  // Aggregate stats across all sessions
   const allTime = sessions.reduce(
     (acc, s) => ({
       sessions:  acc.sessions  + 1,
@@ -122,24 +112,7 @@ function HistoryContent() {
     <div className="fusion-layout">
 
       {/* SIDEBAR */}
-      <aside className="fusion-sidebar">
-        <div className="fusion-logo">
-          <div className="fusion-logo-icon">A</div>
-        </div>
-        <nav className="fusion-nav">
-          {NAV_ITEMS.map(item => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`fusion-nav-item ${item.active ? 'active' : ''}`}
-              title={item.label}
-              style={{ textDecoration: 'none' }}
-            >
-              <span className="fusion-nav-icon">{item.icon}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar activePage="history" />
 
       {/* MAIN */}
       <div className="fusion-main">
@@ -180,10 +153,10 @@ function HistoryContent() {
           {mounted && sessions.length > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
               {[
-                { icon: <CalendarDays size={18} />,  label: 'Sessions',      val: allTime.sessions,                    color: '#5B9BD5' },
-                { icon: <ClipboardList size={18} />, label: 'Total Entries',  val: allTime.entries,                     color: '#C9AD7F' },
-                { icon: <Flame size={18} />,         label: 'Total Calories', val: `${Math.round(allTime.calories)} kcal`, color: 'var(--accent)' },
-                { icon: <TrendingUp size={18} />,    label: 'Avg kcal/session', val: `${Math.round(allTime.calories / allTime.sessions)} kcal`, color: '#F9A03F' },
+                { icon: <CalendarDays size={18} />,  label: 'Sessions',         val: allTime.sessions,                                              color: '#5B9BD5' },
+                { icon: <ClipboardList size={18} />, label: 'Total Entries',    val: allTime.entries,                                               color: '#C9AD7F' },
+                { icon: <Flame size={18} />,         label: 'Total Calories',   val: `${Math.round(allTime.calories)} kcal`,                        color: 'var(--accent)' },
+                { icon: <TrendingUp size={18} />,    label: 'Avg kcal/session', val: `${Math.round(allTime.calories / allTime.sessions)} kcal`,     color: '#F9A03F' },
               ].map(s => (
                 <div key={s.label} className="fusion-card" style={{ padding: '16px 18px', display: 'flex', flexDirection: 'column', gap: 6 }}>
                   <span style={{ color: s.color }}>{s.icon}</span>
@@ -219,7 +192,7 @@ function HistoryContent() {
                 return (
                   <div key={session.id} className="fusion-card" style={{ padding: 0, overflow: 'hidden' }}>
 
-                    {/* Session header — always visible */}
+                    {/* Session header */}
                     <div
                       onClick={() => toggleExpand(session.id)}
                       style={{
@@ -229,17 +202,13 @@ function HistoryContent() {
                         transition: 'background 0.15s',
                       }}
                     >
-                      {/* Date */}
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>
-                          {session.date}
-                        </p>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{session.date}</p>
                         <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
                           {session.entries.length} item{session.entries.length !== 1 ? 's' : ''}
                         </p>
                       </div>
 
-                      {/* Macro pills */}
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         {[
                           { label: `C ${session.totals.carbs.toFixed(1)}g`,   color: '#F9A03F' },
@@ -257,7 +226,6 @@ function HistoryContent() {
                         ))}
                       </div>
 
-                      {/* Calories */}
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
                         <p style={{ fontSize: 20, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
                           {Math.round(session.totals.calories)}
@@ -265,7 +233,6 @@ function HistoryContent() {
                         <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>kcal</p>
                       </div>
 
-                      {/* Expand / delete */}
                       <div style={{ display: 'flex', gap: 4, alignItems: 'center', flexShrink: 0 }}>
                         <button
                           onClick={e => { e.stopPropagation(); handleDelete(session.id) }}
@@ -348,7 +315,6 @@ function HistoryContent() {
                               )
                             })}
                           </tbody>
-                          {/* Session totals row */}
                           <tfoot>
                             <tr style={{ background: 'rgba(201,173,127,0.12)' }}>
                               <td colSpan={3} style={{ padding: '9px 14px', fontSize: 11, fontWeight: 700, color: 'var(--text)' }}>

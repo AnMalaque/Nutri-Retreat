@@ -1,11 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
-import Link from 'next/link'
+import Sidebar from '@/components/Sidebar'
 import {
-  LayoutDashboard,
-  Hamburger,
-  History,
-  Target,
   Search,
   Beef,
   Wheat,
@@ -28,6 +24,7 @@ export default function FELPage() {
     </AuthGuard>
   )
 }
+
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 type SortKey = 'english_name' | 'calories' | 'carbohydrate_g' | 'protein_g' | 'fat_g'
 type SortDir = 'asc' | 'desc'
@@ -47,13 +44,6 @@ interface FoodItem {
   protein_level?: string
   category?: string
 }
-
-const NAV_ITEMS = [
-  { icon: <LayoutDashboard size={20} />, label: 'Dashboard', href: '/dashboard', active: false },
-  { icon: <Hamburger size={20} />, label: 'FEL', href: '/fel', active: true },
-  { icon: <History size={20} />, label: 'Food History', href: '/history', active: false },
-  { icon: <Target size={20} />, label: 'Meal Goals', href: '#', active: false },
-]
 
 const FOOD_TABS: { value: FoodType; label: string; icon: React.ReactNode; color: string }[] = [
   { value: 'rice',      label: 'Rice',      icon: <Wheat size={15} />,    color: '#C9AD7F' },
@@ -87,34 +77,34 @@ const MILK_FILTERS = [
 const PAGE_SIZES = [10, 25, 50, 100]
 
 const FAT_BADGE: Record<string, { label: string; color: string; bg: string }> = {
-  low:    { label: 'Low Fat',    color: '#4caf50', bg: 'rgba(76,175,80,0.12)'   },
-  medium: { label: 'Med Fat',    color: '#F9A03F', bg: 'rgba(249,160,63,0.12)'  },
-  high:   { label: 'High Fat',   color: '#E85555', bg: 'rgba(232,85,85,0.12)'   },
+  low:    { label: 'Low Fat',  color: '#4caf50', bg: 'rgba(76,175,80,0.12)'   },
+  medium: { label: 'Med Fat',  color: '#F9A03F', bg: 'rgba(249,160,63,0.12)'  },
+  high:   { label: 'High Fat', color: '#E85555', bg: 'rgba(232,85,85,0.12)'   },
 }
 
 const PROT_BADGE: Record<string, { label: string; color: string; bg: string }> = {
-  low:    { label: 'Rice A',     color: '#7BAD6E', bg: 'rgba(123,173,110,0.12)' },
-  medium: { label: 'Rice B',     color: '#F9A03F', bg: 'rgba(249,160,63,0.12)'  },
-  high:   { label: 'Rice C',     color: '#E85555', bg: 'rgba(232,85,85,0.12)'   },
+  low:    { label: 'Rice A',   color: '#7BAD6E', bg: 'rgba(123,173,110,0.12)' },
+  medium: { label: 'Rice B',   color: '#F9A03F', bg: 'rgba(249,160,63,0.12)'  },
+  high:   { label: 'Rice C',   color: '#E85555', bg: 'rgba(232,85,85,0.12)'   },
 }
 
 const MILK_BADGE: Record<string, { label: string; color: string; bg: string }> = {
-  whole:   { label: 'Whole',    color: '#5B9BD5', bg: 'rgba(91,155,213,0.12)'  },
-  low_fat: { label: 'Low Fat',  color: '#7BAD6E', bg: 'rgba(123,173,110,0.12)' },
-  non_fat: { label: 'Skim',     color: '#C9AD7F', bg: 'rgba(201,173,127,0.12)' },
+  whole:   { label: 'Whole',   color: '#5B9BD5', bg: 'rgba(91,155,213,0.12)'  },
+  low_fat: { label: 'Low Fat', color: '#7BAD6E', bg: 'rgba(123,173,110,0.12)' },
+  non_fat: { label: 'Skim',    color: '#C9AD7F', bg: 'rgba(201,173,127,0.12)' },
 }
 
 function FELContent() {
-  const [activeType, setActiveType]   = useState<FoodType>('rice')
-  const [search, setSearch]           = useState('')
-  const [filter, setFilter]           = useState('')
-  const [foods, setFoods]             = useState<FoodItem[]>([])
-  const [loading, setLoading]         = useState(false)
-  const [error, setError]             = useState<string | null>(null)
-  const [sortKey, setSortKey]         = useState<SortKey>('english_name')
-  const [sortDir, setSortDir]         = useState<SortDir>('asc')
-  const [page, setPage]               = useState(1)
-  const [pageSize, setPageSize]       = useState(25)
+  const [activeType, setActiveType] = useState<FoodType>('rice')
+  const [search, setSearch]         = useState('')
+  const [filter, setFilter]         = useState('')
+  const [foods, setFoods]           = useState<FoodItem[]>([])
+  const [loading, setLoading]       = useState(false)
+  const [error, setError]           = useState<string | null>(null)
+  const [sortKey, setSortKey]       = useState<SortKey>('english_name')
+  const [sortDir, setSortDir]       = useState<SortDir>('asc')
+  const [page, setPage]             = useState(1)
+  const [pageSize, setPageSize]     = useState(25)
 
   const fetchFoods = useCallback(async () => {
     setLoading(true)
@@ -172,8 +162,6 @@ function FELContent() {
     activeType === 'rice' ? RICE_FILTERS :
     activeType === 'milk' ? MILK_FILTERS : null
 
-  const activeTab = FOOD_TABS.find(t => t.value === activeType)!
-
   const SortTh = ({ col, label }: { col: SortKey; label: string }) => (
     <th
       onClick={() => handleSort(col)}
@@ -203,24 +191,7 @@ function FELContent() {
     <div className="fusion-layout">
 
       {/* SIDEBAR */}
-      <aside className="fusion-sidebar">
-        <div className="fusion-logo">
-          <div className="fusion-logo-icon">A</div>
-        </div>
-        <nav className="fusion-nav">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`fusion-nav-item ${item.active ? 'active' : ''}`}
-              title={item.label}
-              style={{ textDecoration: 'none' }}
-            >
-              <span className="fusion-nav-icon">{item.icon}</span>
-            </Link>
-          ))}
-        </nav>
-      </aside>
+      <Sidebar activePage="fel" />
 
       {/* MAIN */}
       <div className="fusion-main">
@@ -234,7 +205,7 @@ function FELContent() {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 26, zIndex: 1,
             }}>
-              <Hamburger size={28} color="#fff" />
+              <Beef size={28} color="#fff" />
             </div>
             <div style={{ zIndex: 1 }}>
               <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2, color: 'var(--text)' }}>
@@ -284,7 +255,6 @@ function FELContent() {
 
           {/* FILTERS ROW */}
           <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-            {/* Search */}
             <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
               <span style={{
                 position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
@@ -302,7 +272,6 @@ function FELContent() {
               />
             </div>
 
-            {/* Sub-filter */}
             {subFilters && (
               <select
                 className="fusion-select"
@@ -316,7 +285,6 @@ function FELContent() {
               </select>
             )}
 
-            {/* Page size */}
             <select
               className="fusion-select"
               value={pageSize}
@@ -401,33 +369,22 @@ function FELContent() {
                           <tr
                             key={food.id}
                             style={{
-                              background: idx % 2 === 0
-                                ? 'transparent'
-                                : 'rgba(246,247,221,0.18)',
+                              background: idx % 2 === 0 ? 'transparent' : 'rgba(246,247,221,0.18)',
                               transition: 'background 0.12s',
                             }}
                             onMouseEnter={e => (e.currentTarget.style.background = 'rgba(201,173,127,0.18)')}
                             onMouseLeave={e => (e.currentTarget.style.background = idx % 2 === 0 ? 'transparent' : 'rgba(246,247,221,0.18)')}
                           >
-                            {/* Name */}
                             <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(222,207,172,0.25)' }}>
-                              <p style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>
-                                {food.english_name}
-                              </p>
-                              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>
-                                {food.filipino_name}
-                              </p>
+                              <p style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 2 }}>{food.english_name}</p>
+                              <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{food.filipino_name}</p>
                             </td>
-
-                            {/* Measure */}
                             <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(222,207,172,0.25)', color: 'var(--text-muted)', fontSize: 12 }}>
                               {food.household_measure
                                 ? <span>{food.household_measure}<br /><span style={{ fontSize: 11 }}>({baseAmt}{unit})</span></span>
                                 : <span>{baseAmt}{unit}</span>
                               }
                             </td>
-
-                            {/* Category badge */}
                             {(activeType === 'meat' || activeType === 'rice' || activeType === 'milk') && (
                               <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(222,207,172,0.25)' }}>
                                 {badge ? (
@@ -443,8 +400,6 @@ function FELContent() {
                                 ) : '—'}
                               </td>
                             )}
-
-                            {/* Macros */}
                             <td style={{ padding: '11px 14px', textAlign: 'right', borderBottom: '1px solid rgba(222,207,172,0.25)', fontFamily: 'monospace', fontSize: 13, color: '#F9A03F', fontWeight: 500 }}>
                               {food.carbohydrate_g != null ? food.carbohydrate_g.toFixed(1) : '—'}
                             </td>
