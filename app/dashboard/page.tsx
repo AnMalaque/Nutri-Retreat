@@ -4,6 +4,7 @@ import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
 import Sidebar from '@/components/Sidebar'
+import { saveFoodLog } from '@/lib/services/foodlogs'
 import { 
   History,
   Scroll,
@@ -19,7 +20,7 @@ import {
   FlameKindling, 
   Fish, 
   Drumstick 
-} from 'lucide-react';
+} from 'lucide-react'
 import AuthGuard from '@/components/AuthGuard'
 
 export default function DashboardPage() {
@@ -29,6 +30,7 @@ export default function DashboardPage() {
     </AuthGuard>
   )
 }
+
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 
 interface FoodItem {
@@ -60,6 +62,7 @@ const EXCHANGE_REF = [
 
 function DashboardContent() {
   const [entries, setEntries] = useState<LogEntry[]>([])
+  const [saving,  setSaving]  = useState(false)
 
   const handleAddFood = useCallback((food: FoodItem, grams: number, type: FoodType) => {
     const baseWeight = food.weight_g || food.amount_ml || 1
@@ -93,26 +96,16 @@ function DashboardContent() {
     if (confirm('Clear all food entries?')) setEntries([])
   }
 
-  const HISTORY_KEY = 'nutri-retreat:history'
-
-  const handleSaveLog = () => {
-    if (entries.length === 0) return
-    const now     = new Date()
-    const session = {
-      id:      now.toISOString(),
-      date:    now.toLocaleString('en-PH', {
-        weekday: 'short', year: 'numeric', month: 'short',
-        day: 'numeric', hour: '2-digit', minute: '2-digit',
-      }),
-      entries,
-      totals,
-    }
+  const handleSaveLog = async () => {
+    if (entries.length === 0 || saving) return
+    setSaving(true)
     try {
-      const existing = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]')
-      localStorage.setItem(HISTORY_KEY, JSON.stringify([...existing, session]))
+      await saveFoodLog(entries)
       if (confirm('Log saved to Food History! Clear the current log?')) setEntries([])
-    } catch {
-      alert('Could not save — localStorage may be full.')
+    } catch (err: any) {
+      alert(`Could not save log: ${err?.message ?? 'Unknown error'}`)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -171,7 +164,7 @@ function DashboardContent() {
                   className="fusion-btn-ghost"
                   style={{ marginTop: 8, fontSize: 11, padding: '5px 12px' }}
                 >
-                   Clear All
+                  Clear All
                 </button>
               )}
             </div>
@@ -197,7 +190,7 @@ function DashboardContent() {
                 {/* LOG */}
                 <div className="fusion-card">
                   <h2 className="fusion-card-title">
-                    <Scroll/> Food Log
+                    <Scroll /> Food Log
                     <span style={{
                       fontSize: 10, fontWeight: 600, background: '#F0F0F6',
                       color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 20, marginLeft: 'auto',
@@ -208,10 +201,11 @@ function DashboardContent() {
                       <button
                         onClick={handleSaveLog}
                         className="fusion-btn"
-                        style={{ fontSize: 11, padding: '4px 12px', marginLeft: 6 }}
+                        style={{ fontSize: 11, padding: '4px 12px', marginLeft: 6, opacity: saving ? 0.6 : 1 }}
                         title="Save this log to Food History"
+                        disabled={saving}
                       >
-                        <History size={12} /> Save Log
+                        <History size={12} /> {saving ? 'Saving…' : 'Save Log'}
                       </button>
                     )}
                   </h2>
@@ -228,7 +222,7 @@ function DashboardContent() {
 
               {/* Exchange Reference */}
               <div className="fusion-card">
-                <h3 className="fusion-card-title"><BookOpen/> Exchange Reference</h3>
+                <h3 className="fusion-card-title"><BookOpen /> Exchange Reference</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                   {EXCHANGE_REF.map((item) => (
                     <div key={item.label} className="fusion-exch-row">
@@ -257,7 +251,7 @@ function DashboardContent() {
           borderTop: '1px solid var(--border)',
           fontSize: 12, color: 'var(--text-muted)',
         }}>
-           Nutri Retreat · Filipino Food Exchange Lists · Atwater general factors (C×4, P×4, F×9)
+          Nutri Retreat · Filipino Food Exchange Lists · Atwater general factors (C×4, P×4, F×9)
         </footer>
       </div>
     </div>
@@ -278,7 +272,7 @@ function AtwaterPanel({ totals }: { totals: { carbs: number; protein: number; fa
 
   return (
     <div className="fusion-card">
-      <h3 className="fusion-card-title"><Flame/> Energy Breakdown</h3>
+      <h3 className="fusion-card-title"><Flame /> Energy Breakdown</h3>
       {rows.map((r) => (
         <div key={r.label} style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
