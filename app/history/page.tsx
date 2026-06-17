@@ -140,7 +140,7 @@ export default function HistoryPage() {
           <div className="fusion-hero" style={{ marginBottom: 24 }}>
             <div style={{
               width: 56, height: 56, borderRadius: 16, flexShrink: 0,
-              background: 'linear-gradient(135deg, #5B9BD5, #3a7abf)',
+              background: 'linear-gradient(135deg, #C9AD7F, #A67C5B)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               zIndex: 1,
             }}>
