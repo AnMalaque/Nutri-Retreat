@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import CubeField from "@/components/CubeField";
 import { Toaster } from 'sonner'
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: "Nutri Retreat – Filipino Food Exchange Tracker",
@@ -36,6 +37,7 @@ export default function RootLayout({
             },
           }}
         />
+        <Analytics />
       </body>
     </html>
   );
