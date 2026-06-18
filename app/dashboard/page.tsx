@@ -6,6 +6,7 @@ import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
 import Sidebar from '@/components/Sidebar'
 import { saveFoodLog } from '@/lib/services/foodlogs'
+import { getProfile } from '@/lib/services/profiles'
 import { 
   History,
   Scroll,
@@ -62,8 +63,19 @@ const EXCHANGE_REF = [
 ]
 
 function DashboardContent() {
-  const [entries, setEntries] = useState<LogEntry[]>([])
-  const [saving,  setSaving]  = useState(false)
+  const [entries,   setEntries]   = useState<LogEntry[]>([])
+  const [saving,    setSaving]    = useState(false)
+  const [firstName, setFirstName] = useState<string>('')
+
+  // Load first name from profile
+  useEffect(() => {
+    getProfile()
+      .then(p => { if (p?.first_name) setFirstName(p.first_name.trim()) })
+      .catch(() => {})
+  }, [])
+
+  const initial     = firstName?.[0]?.toUpperCase() || '?'
+  const displayName = firstName ? `Welcome, ${firstName}!` : "Today's Nutrition"
 
   const handleAddFood = useCallback((food: FoodItem, grams: number, type: FoodType) => {
     const baseWeight = food.weight_g || food.amount_ml || 1
@@ -86,11 +98,11 @@ function DashboardContent() {
       calories:       totalCal,
       unit:           type === 'milk' ? 'ml' : 'g',
     }
-    setEntries((prev) => [...prev, entry])
+    setEntries(prev => [...prev, entry])
   }, [])
 
   const handleRemove = useCallback((id: string) => {
-    setEntries((prev) => prev.filter((e) => e.id !== id))
+    setEntries(prev => prev.filter(e => e.id !== id))
   }, [])
 
   const handleClear = () => {
@@ -124,31 +136,31 @@ function DashboardContent() {
 
   return (
     <div className="fusion-layout">
-
-      {/* ── SIDEBAR ── */}
       <Sidebar activePage="dashboard" />
 
-      {/* ── MAIN ── */}
       <div className="fusion-main">
-
-        {/* FLOATING TIME */}
         <FloatingTime />
 
-        {/* CONTENT */}
         <main style={{ padding: '24px 28px' }}>
 
           {/* ── HERO CARD ── */}
           <div className="fusion-hero" style={{ marginBottom: 24 }}>
+
+            {/* Profile initial icon */}
             <div style={{
               width: 56, height: 56, borderRadius: 16, flexShrink: 0,
               background: 'linear-gradient(135deg, #C9AD7F, #A67C5B)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 26, zIndex: 1,
-              color: 'white', fontWeight: 700,
-            }}>A</div>
+              fontSize: 24, fontWeight: 700, color: '#fff',
+              userSelect: 'none', zIndex: 1,
+            }}>
+              {initial}
+            </div>
 
             <div style={{ zIndex: 1 }}>
-              <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>Today&apos;s Nutrition</p>
+              <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>
+                {displayName}
+              </p>
               <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 3 }}>
                 Food Exchange Tracker · Today&apos;s Progress
               </p>
@@ -171,24 +183,17 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* ── MACRO ROW + RIGHT PANEL (2-col grid) ── */}
+          {/* ── MACRO ROW + RIGHT PANEL ── */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 290px', gap: 20, alignItems: 'start' }}>
 
-            {/* LEFT: macro cards + food search + log */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-
-              {/* Macro cards row */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
                 <MacroSummary totals={totals} />
               </div>
 
-              {/* Food search + log side by side */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, alignItems: 'start' }}>
-
-                {/* SEARCH */}
                 <FoodSearch onAddFood={handleAddFood} />
 
-                {/* LOG */}
                 <div className="fusion-card">
                   <h2 className="fusion-card-title">
                     <Scroll /> Food Log
@@ -215,13 +220,9 @@ function DashboardContent() {
               </div>
             </div>
 
-            {/* RIGHT PANEL */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-
-              {/* Atwater */}
               <AtwaterPanel totals={totals} />
 
-              {/* Exchange Reference */}
               <div className="fusion-card">
                 <h3 className="fusion-card-title"><BookOpen /> Exchange Reference</h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -240,13 +241,10 @@ function DashboardContent() {
                   </p>
                 </div>
               </div>
-
             </div>
           </div>
-
         </main>
 
-        {/* FOOTER */}
         <footer style={{
           textAlign: 'center', padding: '20px 28px',
           borderTop: '1px solid var(--border)',
@@ -307,34 +305,19 @@ function FloatingTime() {
 
   return (
     <div style={{
-      position: 'fixed',
-      bottom: 24,
-      right: 28,
-      zIndex: 100,
-      background: 'var(--card)',
-      borderRadius: 16,
+      position: 'fixed', bottom: 24, right: 28, zIndex: 100,
+      background: 'var(--card)', borderRadius: 16,
       boxShadow: '0 4px 24px rgba(255, 107, 53, 0.15), 0 1px 6px rgba(0,0,0,0.08)',
-      padding: '10px 18px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'flex-end',
-      gap: 1,
+      padding: '10px 18px', display: 'flex', flexDirection: 'column',
+      alignItems: 'flex-end', gap: 1,
       border: '1px solid rgba(255,107,53,0.12)',
       backdropFilter: 'blur(12px)',
     }}>
       <span style={{
-        fontSize: 20,
-        fontWeight: 700,
-        color: 'var(--accent)',
-        letterSpacing: '-0.5px',
-        fontVariantNumeric: 'tabular-nums',
-        lineHeight: 1,
+        fontSize: 20, fontWeight: 700, color: 'var(--accent)',
+        letterSpacing: '-0.5px', fontVariantNumeric: 'tabular-nums', lineHeight: 1,
       }}>{timeStr}</span>
-      <span style={{
-        fontSize: 10,
-        color: 'var(--text-muted)',
-        fontWeight: 500,
-      }}>{dateStr}</span>
+      <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 500 }}>{dateStr}</span>
     </div>
   )
 }
