@@ -30,6 +30,7 @@ interface FoodItem {
   fat_level?: string
   protein_level?: string
   category?: string
+  preparation?: string
 }
 
 interface FoodSearchProps {
@@ -64,11 +65,23 @@ const MILK_FILTERS = [
   { value: 'low_fat', label: 'Low Fat (125 kcal/exchange)' },
   { value: 'non_fat', label: 'Non-Fat / Skim (80 kcal/exchange)' },
 ]
+const VEGETABLE_CATEGORY_FILTERS = [
+  { value: '', label: 'All Vegetables' },
+  { value: 'fresh', label: 'Fresh' },
+  { value: 'processed', label: 'Processed' },
+]
+
+const VEGETABLE_PREPARATION_FILTERS = [
+  { value: '', label: 'All Preparations' },
+  { value: 'raw', label: 'Raw' },
+  { value: 'cooked', label: 'Cooked' },
+]
 
 export default function FoodSearch({ onAddFood }: FoodSearchProps) {
   const [selectedType, setSelectedType] = useState<FoodType>('rice')
   const [search, setSearch]             = useState('')
   const [filter, setFilter]             = useState('')
+  const [vegPreparation, setVegPreparation] = useState('')
   const [foods, setFoods]               = useState<FoodItem[]>([])
   const [loading, setLoading]           = useState(false)
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null)
@@ -81,9 +94,28 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
       const params = new URLSearchParams({ type: selectedType })
       if (search) params.set('search', search)
       if (filter) {
-        if (selectedType === 'meat') params.set('fat_level', filter)
-        if (selectedType === 'rice') params.set('protein_level', filter)
-        if (selectedType === 'milk') params.set('category', filter)
+        if (selectedType === 'meat') {
+          params.set('fat_level', filter)
+        }
+
+        if (selectedType === 'rice') {
+          params.set('protein_level', filter)
+        }
+
+        if (selectedType === 'milk') {
+          params.set('category', filter)
+        }
+
+        if (selectedType === 'vegetable') {
+          params.set('category', filter)
+        }
+      }
+      if (
+        selectedType === 'vegetable' &&
+        filter === 'fresh' &&
+        vegPreparation
+      ) {
+        params.set('preparation', vegPreparation)
       }
       const res  = await fetch(`/api/foods?${params}`)
       const json = await res.json()
@@ -99,11 +131,12 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
     if (debounce.current) clearTimeout(debounce.current)
     debounce.current = setTimeout(fetchFoods, 300)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedType, search, filter])
+  }, [selectedType, search, filter, vegPreparation])
 
   useEffect(() => {
     setSelectedFood(null)
     setFilter('')
+    setVegPreparation('')
     setSearch('')
   }, [selectedType])
 
@@ -122,11 +155,16 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
   const previewProt = ratio * (selectedFood?.protein_g       || 0)
   const previewFat  = ratio * (selectedFood?.fat_g           || 0)
 
-  const subFilters =
-    selectedType === 'meat' ? MEAT_FILTERS :
-    selectedType === 'rice' ? RICE_FILTERS :
-    selectedType === 'milk' ? MILK_FILTERS : null
-
+    const subFilters =
+  selectedType === 'meat'
+    ? MEAT_FILTERS
+    : selectedType === 'rice'
+    ? RICE_FILTERS
+    : selectedType === 'milk'
+    ? MILK_FILTERS
+    : selectedType === 'vegetable'
+    ? VEGETABLE_CATEGORY_FILTERS
+    : null
   return (
     <div className="fusion-card">
       <h2 className="fusion-card-title"><BadgePlus /> Add Food to Log</h2>
@@ -145,17 +183,36 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
       </div>
 
       {/* Sub-filter */}
-      {subFilters && (
-        <select
-          className="fusion-select"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          {subFilters.map((f) => (
-            <option key={f.value} value={f.value}>{f.label}</option>
-          ))}
-        </select>
-      )}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+  {subFilters && (
+    <select
+      className="fusion-select"
+      value={filter}
+      onChange={(e) => {
+        setFilter(e.target.value)
+        setVegPreparation('')
+      }}
+    >
+      {subFilters.map((f) => (
+        <option key={f.value} value={f.value}>
+          {f.label}
+        </option>
+      ))}
+    </select>
+  )}
+
+  {selectedType === 'vegetable' && filter === 'fresh' && (
+    <select
+      className="fusion-select"
+      value={vegPreparation}
+      onChange={(e) => setVegPreparation(e.target.value)}
+    >
+      <option value="">All Preparations</option>
+      <option value="raw">Raw</option>
+      <option value="cooked">Cooked</option>
+    </select>
+  )}
+</div>
 
       {/* Search */}
       <div style={{ position: 'relative', marginBottom: 10 }}>

@@ -34,11 +34,25 @@ export async function GET(request: Request) {
         break
       }
       case 'vegetable': {
+        const category = searchParams.get('category')
+        const preparation = searchParams.get('preparation')
+
         let query = supabase
           .from('vegetable_foods')
           .select('*')
           .order('english_name')
-        if (search) query = query.or(`filipino_name.ilike.%${search}%,english_name.ilike.%${search}%`)
+        if (category) {
+          query = query.eq('category', category)
+        }
+        if (preparation) {
+          query = query.eq('preparation', preparation)
+        }
+
+        if (search) {
+          query = query.or(
+            `filipino_name.ilike.%${search}%,english_name.ilike.%${search}%`
+          )
+        }
         ;({ data, error } = await query)
         break
       }

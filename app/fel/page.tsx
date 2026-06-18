@@ -43,6 +43,7 @@ interface FoodItem {
   fat_level?: string
   protein_level?: string
   category?: string
+  preparation?: string
 }
 
 const FOOD_TABS: { value: FoodType; label: string; icon: React.ReactNode; color: string }[] = [
@@ -74,6 +75,18 @@ const MILK_FILTERS = [
   { value: 'non_fat', label: 'Non-Fat / Skim' },
 ]
 
+const VEGETABLE_CATEGORY_FILTERS = [
+  { value: '', label: 'All Vegetables' },
+  { value: 'fresh', label: 'Fresh' },
+  { value: 'processed', label: 'Processed' },
+]
+
+const VEGETABLE_PREPARATION_FILTERS = [
+  { value: '', label: 'All Preparations' },
+  { value: 'raw', label: 'Raw' },
+  { value: 'cooked', label: 'Cooked' },
+]
+
 const PAGE_SIZES = [10, 25, 50, 100]
 
 const FAT_BADGE: Record<string, { label: string; color: string; bg: string }> = {
@@ -98,6 +111,7 @@ function FELContent() {
   const [activeType, setActiveType] = useState<FoodType>('rice')
   const [search, setSearch]         = useState('')
   const [filter, setFilter]         = useState('')
+  const [vegPreparation, setVegPreparation] = useState('')
   const [foods, setFoods]           = useState<FoodItem[]>([])
   const [loading, setLoading]       = useState(false)
   const [error, setError]           = useState<string | null>(null)
@@ -113,9 +127,25 @@ function FELContent() {
       const params = new URLSearchParams({ type: activeType })
       if (search) params.set('search', search)
       if (filter) {
-        if (activeType === 'meat') params.set('fat_level', filter)
-        if (activeType === 'rice') params.set('protein_level', filter)
-        if (activeType === 'milk') params.set('category', filter)
+        if (activeType === 'meat')
+          params.set('fat_level', filter)
+
+        if (activeType === 'rice')
+          params.set('protein_level', filter)
+
+        if (activeType === 'milk')
+          params.set('category', filter)
+
+        if (activeType === 'vegetable')
+          params.set('category', filter)
+      }
+
+      if (
+        activeType === 'vegetable' &&
+        filter === 'fresh' &&
+        vegPreparation
+      ) {
+        params.set('preparation', vegPreparation)
       }
       const res  = await fetch(`/api/foods?${params}`)
       const json = await res.json()
@@ -128,7 +158,7 @@ function FELContent() {
     } finally {
       setLoading(false)
     }
-  }, [activeType, search, filter])
+  }, [activeType, search, filter, vegPreparation])
 
   useEffect(() => {
     const t = setTimeout(fetchFoods, 300)
@@ -137,6 +167,7 @@ function FELContent() {
 
   useEffect(() => {
     setFilter('')
+    setVegPreparation('')
     setSearch('')
     setPage(1)
   }, [activeType])
@@ -158,9 +189,15 @@ function FELContent() {
   }
 
   const subFilters =
-    activeType === 'meat' ? MEAT_FILTERS :
-    activeType === 'rice' ? RICE_FILTERS :
-    activeType === 'milk' ? MILK_FILTERS : null
+  activeType === 'meat'
+    ? MEAT_FILTERS
+    : activeType === 'rice'
+    ? RICE_FILTERS
+    : activeType === 'milk'
+    ? MILK_FILTERS
+    : activeType === 'vegetable'
+    ? VEGETABLE_CATEGORY_FILTERS
+    : null
 
   const SortTh = ({ col, label }: { col: SortKey; label: string }) => (
     <th
@@ -272,18 +309,40 @@ function FELContent() {
               />
             </div>
 
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
             {subFilters && (
               <select
                 className="fusion-select"
                 value={filter}
-                onChange={e => setFilter(e.target.value)}
+                onChange={e => {
+                  setFilter(e.target.value)
+                  setVegPreparation('')
+                }}
                 style={{ minWidth: 180 }}
               >
                 {subFilters.map(f => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
+                  <option key={f.value} value={f.value}>
+                    {f.label}
+                  </option>
                 ))}
               </select>
             )}
+
+            {activeType === 'vegetable' && filter === 'fresh' && (
+              <select
+                className="fusion-select"
+                value={vegPreparation}
+                onChange={e => setVegPreparation(e.target.value)}
+                style={{ minWidth: 180 }}
+              >
+                {VEGETABLE_PREPARATION_FILTERS.map(f => (
+                  <option key={f.value} value={f.value}>
+                    {f.label}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
 
             <select
               className="fusion-select"
@@ -330,7 +389,10 @@ function FELContent() {
                         }}>
                           Measure
                         </th>
-                        {(activeType === 'meat' || activeType === 'rice' || activeType === 'milk') && (
+                        {(activeType === 'meat' ||
+                          activeType === 'rice' ||
+                          activeType === 'milk' ||
+                          activeType === 'vegetable') && (
                           <th style={{
                             padding: '10px 14px', fontSize: 11, fontWeight: 600,
                             color: 'var(--text-muted)', borderBottom: '1px solid var(--border)',
@@ -363,7 +425,10 @@ function FELContent() {
                         let badge: { label: string; color: string; bg: string } | null = null
                         if (activeType === 'meat' && food.fat_level)     badge = FAT_BADGE[food.fat_level] || null
                         if (activeType === 'rice' && food.protein_level) badge = PROT_BADGE[food.protein_level] || null
-                        if (activeType === 'milk' && food.category)      badge = MILK_BADGE[food.category] || null
+                        if (activeType === 'milk' && food.category) badge = MILK_BADGE[food.category] || null
+                        if (activeType === 'vegetable') {badge = {label:food.category === 'fresh'? `Fresh • ${food.preparation ?? 'N/A'}`: 'Processed',color: '#7BAD6E',bg: 'rgba(123,173,110,0.12)',
+                          }
+                        }
 
                         return (
                           <tr
@@ -385,19 +450,36 @@ function FELContent() {
                                 : <span>{baseAmt}{unit}</span>
                               }
                             </td>
-                            {(activeType === 'meat' || activeType === 'rice' || activeType === 'milk') && (
-                              <td style={{ padding: '11px 14px', borderBottom: '1px solid rgba(222,207,172,0.25)' }}>
+                            {(
+                              activeType === 'meat' ||
+                              activeType === 'rice' ||
+                              activeType === 'milk' ||
+                              activeType === 'vegetable'
+                            ) && (
+                              <td
+                                style={{
+                                  padding: '11px 14px',
+                                  borderBottom: '1px solid rgba(222,207,172,0.25)',
+                                }}
+                              >
                                 {badge ? (
-                                  <span style={{
-                                    display: 'inline-block',
-                                    padding: '3px 9px', borderRadius: 20,
-                                    fontSize: 11, fontWeight: 600,
-                                    color: badge.color, background: badge.bg,
-                                    whiteSpace: 'nowrap',
-                                  }}>
+                                  <span
+                                    style={{
+                                      display: 'inline-block',
+                                      padding: '3px 9px',
+                                      borderRadius: 20,
+                                      fontSize: 11,
+                                      fontWeight: 600,
+                                      color: badge.color,
+                                      background: badge.bg,
+                                      whiteSpace: 'nowrap',
+                                    }}
+                                  >
                                     {badge.label}
                                   </span>
-                                ) : '—'}
+                                ) : (
+                                  '—'
+                                )}
                               </td>
                             )}
                             <td style={{ padding: '11px 14px', textAlign: 'right', borderBottom: '1px solid rgba(222,207,172,0.25)', fontFamily: 'monospace', fontSize: 13, color: '#F9A03F', fontWeight: 500 }}>
