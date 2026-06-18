@@ -27,12 +27,12 @@ export default function RootLayout({
         <CubeField />
         {children}
         <Toaster
-          position="top-right"
           richColors
+          position="top-right"
           toastOptions={{
-            style: {
-              borderRadius: '16px',
-              backdropFilter: 'blur(16px)',
+            classNames: {
+              actionButton: 'fusion-toast-action',
+              cancelButton: 'fusion-toast-cancel',
             },
           }}
         />

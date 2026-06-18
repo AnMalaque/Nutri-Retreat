@@ -106,7 +106,8 @@ function DashboardContent() {
   }, [])
 
   const handleClear = () => {
-    if (confirm('Clear all food entries?')) setEntries([])
+    toast.success('Food log cleared!')
+    setEntries([])
   }
 
   const handleSaveLog = async () => {
@@ -114,7 +115,8 @@ function DashboardContent() {
     setSaving(true)
     try {
       await saveFoodLog(entries)
-      if (confirm('Log saved to Food History! Clear the current log?')) setEntries([])
+      toast.success('Food log saved to history!')
+      setEntries([])
     } catch (err: any) {
       toast.error(`Could not save log: ${err?.message ?? 'Unknown error'}`)
     } finally {

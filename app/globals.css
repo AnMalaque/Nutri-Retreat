@@ -640,3 +640,25 @@ body {
   background: radial-gradient(circle at 80% 50%, rgba(201, 173, 127, 0.20), transparent 70%);
   z-index: 0;
 }
+.fusion-toast-action {
+  border-radius: 9999px !important;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(
+    135deg,
+    #c9ad7f,
+    #a67c5b
+  ) !important;
+
+  color: white !important;
+  font-weight: 600 !important;
+  border: none !important;
+}
+
+.fusion-toast-cancel {
+  border-radius: 9999px !important;
+
+  background: rgba(255,255,255,.15) !important;
+  backdrop-filter: blur(12px);
+
+  border: 1px solid rgba(255,255,255,.2) !important;
+}

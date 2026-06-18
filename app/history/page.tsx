@@ -113,56 +113,136 @@ function HistoryContent() {
     })
 
   /** Delete a single food item row */
-  const handleDeleteEntry = async (dbId: string, sessionDate: string) => {
-    if (!confirm('Remove this food item?')) return
-    try {
-      await deleteFoodLog(dbId)
-      setSessions(prev =>
-        prev
-          .map(s => {
-            if (s.date !== sessionDate) return s
-            const entries = s.entries.filter(e => e.db_id !== dbId)
-            const totals = entries.reduce(
-              (acc, e) => ({
-                carbs:    acc.carbs    + e.carbohydrate_g,
-                protein:  acc.protein  + e.protein_g,
-                fat:      acc.fat      + e.fat_g,
-                calories: acc.calories + e.calories,
-              }),
-              { carbs: 0, protein: 0, fat: 0, calories: 0 }
+const handleDeleteEntry = async (
+  dbId: string,
+  sessionDate: string
+) => {
+  toast.warning('Remove this food item?', {
+    description: 'This action cannot be undone.',
+    action: {
+      label: 'Delete',
+      onClick: async () => {
+        try {
+          await deleteFoodLog(dbId)
+
+          setSessions(prev =>
+            prev
+              .map(s => {
+                if (s.date !== sessionDate) return s
+
+                const entries = s.entries.filter(
+                  e => e.db_id !== dbId
+                )
+
+                const totals = entries.reduce(
+                  (acc, e) => ({
+                    carbs:
+                      acc.carbs +
+                      e.carbohydrate_g,
+                    protein:
+                      acc.protein +
+                      e.protein_g,
+                    fat:
+                      acc.fat +
+                      e.fat_g,
+                    calories:
+                      acc.calories +
+                      e.calories,
+                  }),
+                  {
+                    carbs: 0,
+                    protein: 0,
+                    fat: 0,
+                    calories: 0,
+                  }
+                )
+
+                return {
+                  ...s,
+                  entries,
+                  totals,
+                }
+              })
+              .filter(
+                s => s.entries.length > 0
+              )
+          )
+
+          toast.success('Food item removed')
+        } catch (err: any) {
+          toast.error(
+            `Could not delete item: ${err?.message}`
+          )
+        }
+      },
+    },
+  })
+}
+
+const handleDeleteSession = async (
+  session: HistorySession
+) => {
+  toast.warning(
+    `Delete ${session.entries.length} food items?`,
+    {
+      description: `${session.date} will be permanently removed.`,
+      action: {
+        label: 'Delete',
+        onClick: async () => {
+          try {
+            await deleteFoodLogsBySession(
+              session.date
             )
-            return { ...s, entries, totals }
-          })
-          .filter(s => s.entries.length > 0) // remove empty sessions
-      )
-    } catch (err: any) {
-      toast.error(`Could not delete item: ${err?.message}`)
-    }
-  }
 
-  /** Delete all rows for an entire day */
-  const handleDeleteSession = async (session: HistorySession) => {
-    if (!confirm(`Delete all ${session.entries.length} items from ${session.date}?`)) return
-    try {
-      await deleteFoodLogsBySession(session.date)
-      setSessions(prev => prev.filter(s => s.date !== session.date))
-    } catch (err: any) {
-      toast.error(`Could not delete session: ${err?.message}`)
-    }
-  }
+            setSessions(prev =>
+              prev.filter(
+                s => s.date !== session.date
+              )
+            )
 
-  /** Delete every row for this user */
-  const handleClearAll = async () => {
-    if (!confirm('Clear all food history? This cannot be undone.')) return
-    try {
-      await Promise.all(
-        sessions.flatMap(s => s.entries.map(e => deleteFoodLog(e.db_id)))
-      )
-      setSessions([])
-    } catch (err: any) {
-      toast.error(`Could not clear history: ${err?.message}`)
+            toast.success(
+              'Session deleted'
+            )
+          } catch (err: any) {
+            toast.error(
+              `Could not delete session: ${err?.message}`
+            )
+          }
+        },
+      },
+      cancel: {
+        label: 'Cancel',
+        onClick: () => {},
+      },
     }
-  }
+  )
+}
+
+  const handleClearAll = () => {
+  toast.warning('Clear all food history?', {
+    description: 'This action cannot be undone.',
+    action: {
+      label: 'Delete',
+      onClick: async () => {
+        try {
+          await Promise.all(
+            sessions.flatMap(s =>
+              s.entries.map(e => deleteFoodLog(e.db_id))
+            )
+          )
+
+          setSessions([])
+
+          toast.success('History cleared')
+        } catch (err: any) {
+          toast.error(
+            `Could not clear history: ${err?.message}`
+          )
+        }
+      },
+    },
+  })
+}
 
   const allTime = sessions.reduce(
     (acc, s) => ({
