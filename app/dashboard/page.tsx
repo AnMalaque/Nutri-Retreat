@@ -7,21 +7,10 @@ import MacroSummary from '@/components/MacroSummary'
 import Sidebar from '@/components/Sidebar'
 import { saveFoodLog } from '@/lib/services/foodlogs'
 import { getProfile } from '@/lib/services/profiles'
-import { 
+import {
   History,
   Scroll,
   Flame,
-  BookOpen,
-  Broccoli, 
-  Apple, 
-  Wheat, 
-  Cookie, 
-  Beef, 
-  Milk, 
-  Droplets, 
-  FlameKindling, 
-  Fish, 
-  Drumstick 
 } from 'lucide-react'
 import AuthGuard from '@/components/AuthGuard'
 
@@ -48,26 +37,11 @@ interface FoodItem {
   calories: number
 }
 
-const EXCHANGE_REF = [
-  { icon: <Broccoli />,      label: 'Vegetable',        val: '3C·1P·0F = 16'   },
-  { icon: <Apple />,         label: 'Fruit',            val: '10C·0P·0F = 40'  },
-  { icon: <Wheat />,         label: 'Rice A (Low P)',   val: '23C·0P·0F = 92'  },
-  { icon: <Cookie />,        label: 'Rice B (Med P)',   val: '23C·2P·0F = 100' },
-  { icon: <FlameKindling />, label: 'Rice C (High P)',  val: '23C·4P·0F = 108' },
-  { icon: <Milk />,          label: 'Milk (Whole)',     val: '12C·8P·10F = 170'},
-  { icon: <Droplets />,      label: 'Milk (Low Fat)',   val: '12C·8P·5F = 125' },
-  { icon: <Milk />,          label: 'Milk (Skim)',      val: '12C·8P·0F = 80'  },
-  { icon: <Beef />,          label: 'Meat (Low Fat)',   val: '0C·8P·1F = 41'   },
-  { icon: <Fish />,          label: 'Meat (Med Fat)',   val: '0C·8P·6F = 86'   },
-  { icon: <Drumstick />,     label: 'Meat (High Fat)',  val: '0C·8P·10F = 122' },
-]
-
 function DashboardContent() {
   const [entries,   setEntries]   = useState<LogEntry[]>([])
   const [saving,    setSaving]    = useState(false)
   const [firstName, setFirstName] = useState<string>('')
 
-  // Load first name from profile
   useEffect(() => {
     getProfile()
       .then(p => { if (p?.first_name) setFirstName(p.first_name.trim()) })
@@ -143,23 +117,15 @@ function DashboardContent() {
       <div className="fusion-main">
         <FloatingTime />
 
-        <main style={{ padding: '24px 28px' }}>
+        <main className="fusion-dash-main">
 
           {/* ── HERO CARD ── */}
-          <div className="fusion-hero" style={{ marginBottom: 24 }}>
-
-            {/* Profile initial icon */}
-            <div style={{
-              width: 56, height: 56, borderRadius: 16, flexShrink: 0,
-              background: 'linear-gradient(135deg, #C9AD7F, #A67C5B)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 24, fontWeight: 700, color: '#fff',
-              userSelect: 'none', zIndex: 1,
-            }}>
+          <div className="fusion-hero">
+            <div className="fusion-hero-avatar">
               {initial}
             </div>
 
-            <div style={{ zIndex: 1 }}>
+            <div style={{ zIndex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2 }}>
                 {displayName}
               </p>
@@ -168,7 +134,7 @@ function DashboardContent() {
               </p>
             </div>
 
-            <div style={{ marginLeft: 'auto', textAlign: 'center', zIndex: 1, flexShrink: 0 }}>
+            <div className="fusion-hero-kcal">
               <p style={{ fontSize: 32, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
                 {totalKcal}
               </p>
@@ -185,65 +151,42 @@ function DashboardContent() {
             </div>
           </div>
 
-          {/* ── MACRO ROW + RIGHT PANEL ── */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 290px', gap: 20, alignItems: 'start' }}>
+          {/* ── MACRO ROW ── */}
+          <div className="fusion-macro-row">
+            <MacroSummary totals={totals} />
+          </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
-                <MacroSummary totals={totals} />
-              </div>
+          {/* ── CONTENT GRID: Search | Log | Atwater ── */}
+          <div className="fusion-content-grid">
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, alignItems: 'start' }}>
-                <FoodSearch onAddFood={handleAddFood} />
+            <FoodSearch onAddFood={handleAddFood} />
 
-                <div className="fusion-card">
-                  <h2 className="fusion-card-title">
-                    <Scroll /> Food Log
-                    <span style={{
-                      fontSize: 10, fontWeight: 600, background: '#F0F0F6',
-                      color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 20, marginLeft: 'auto',
-                    }}>
-                      {entries.length} item{entries.length !== 1 ? 's' : ''}
-                    </span>
-                    {entries.length > 0 && (
-                      <button
-                        onClick={handleSaveLog}
-                        className="fusion-btn"
-                        style={{ fontSize: 11, padding: '4px 12px', marginLeft: 6, opacity: saving ? 0.6 : 1 }}
-                        title="Save this log to Food History"
-                        disabled={saving}
-                      >
-                        <History size={12} /> {saving ? 'Saving…' : 'Save Log'}
-                      </button>
-                    )}
-                  </h2>
-                  <FoodLog entries={entries} onRemove={handleRemove} />
-                </div>
-              </div>
+            <div className="fusion-card">
+              <h2 className="fusion-card-title">
+                <Scroll /> Food Log
+                <span style={{
+                  fontSize: 10, fontWeight: 600, background: '#F0F0F6',
+                  color: 'var(--text-muted)', padding: '2px 8px', borderRadius: 20, marginLeft: 'auto',
+                }}>
+                  {entries.length} item{entries.length !== 1 ? 's' : ''}
+                </span>
+                {entries.length > 0 && (
+                  <button
+                    onClick={handleSaveLog}
+                    className="fusion-btn"
+                    style={{ fontSize: 11, padding: '4px 12px', marginLeft: 6, opacity: saving ? 0.6 : 1 }}
+                    title="Save this log to Food History"
+                    disabled={saving}
+                  >
+                    <History size={12} /> {saving ? 'Saving…' : 'Save Log'}
+                  </button>
+                )}
+              </h2>
+              <FoodLog entries={entries} onRemove={handleRemove} />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <AtwaterPanel totals={totals} />
+            <AtwaterPanel totals={totals} />
 
-              <div className="fusion-card">
-                <h3 className="fusion-card-title"><BookOpen /> Exchange Reference</h3>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  {EXCHANGE_REF.map((item) => (
-                    <div key={item.label} className="fusion-exch-row">
-                      <span style={{ fontSize: 12, color: 'var(--text)', fontWeight: 500 }}>
-                        {item.icon} {item.label}
-                      </span>
-                      <span style={{ fontSize: 11, color: 'var(--text-muted)', fontFamily: 'monospace' }}>
-                        {item.val}
-                      </span>
-                    </div>
-                  ))}
-                  <p style={{ fontSize: 10, color: 'var(--text-light)', textAlign: 'center', marginTop: 6 }}>
-                    C=carbs · P=protein · F=fat (g) · kcal/exchange
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </main>
 
@@ -255,6 +198,101 @@ function DashboardContent() {
           Nutri Retreat · Filipino Food Exchange Lists · Atwater general factors (C×4, P×4, F×9)
         </footer>
       </div>
+
+      <style>{`
+        /* ── DASHBOARD LAYOUT ── */
+        .fusion-dash-main {
+          padding: 24px 28px;
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          flex: 1;
+        }
+
+        .fusion-hero-avatar {
+          width: 56px; height: 56px;
+          border-radius: 16px; flex-shrink: 0;
+          background: linear-gradient(135deg, #C9AD7F, #A67C5B);
+          display: flex; align-items: center; justify-content: center;
+          font-size: 24px; font-weight: 700; color: #fff;
+          user-select: none; z-index: 1;
+        }
+
+        .fusion-hero-kcal {
+          margin-left: auto;
+          text-align: center;
+          z-index: 1;
+          flex-shrink: 0;
+        }
+
+        /* 3-col macro row */
+        .fusion-macro-row {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+        }
+
+        /* 3-col content grid */
+        .fusion-content-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr 280px;
+          gap: 20px;
+          align-items: start;
+        }
+
+        /* ── TABLET (≤1100px): collapse to 2-col content ── */
+        @media (max-width: 1100px) {
+          .fusion-content-grid {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+          }
+          /* Atwater spans full width on second row */
+          .fusion-content-grid > *:nth-child(3) {
+            grid-column: 1 / -1;
+          }
+        }
+
+        /* ── MOBILE (≤768px) ── */
+        @media (max-width: 768px) {
+          /* Remove sidebar offset — Sidebar.tsx hides itself and shows bottom nav */
+          .fusion-main { margin-left: 0; padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+
+          .fusion-dash-main { padding: 16px; gap: 14px; }
+
+          /* Hero: tighten up */
+          .fusion-hero { padding: 20px 18px; gap: 14px; }
+          .fusion-hero-avatar { width: 44px; height: 44px; font-size: 18px; border-radius: 12px; }
+          .fusion-hero p:first-child { font-size: 18px !important; }
+          .fusion-hero-kcal p:first-child { font-size: 24px !important; }
+
+          /* Macro row stays 3 cols but smaller */
+          .fusion-macro-row { gap: 10px; }
+
+          /* Full-width stacked content */
+          .fusion-content-grid {
+            grid-template-columns: 1fr;
+          }
+          .fusion-content-grid > *:nth-child(3) {
+            grid-column: auto;
+          }
+
+          /* FloatingTime: hide on mobile to save space */
+          .fusion-clock { display: none; }
+
+          footer { padding: 16px !important; }
+        }
+
+        /* ── SMALL MOBILE (≤480px): macro row 1+2 layout ── */
+        @media (max-width: 480px) {
+          .fusion-macro-row {
+            grid-template-columns: 1fr 1fr;
+          }
+          /* 3rd macro card (fat) spans full */
+          .fusion-macro-row > *:nth-child(3) {
+            grid-column: 1 / -1;
+          }
+        }
+      `}</style>
     </div>
   )
 }
@@ -306,7 +344,7 @@ function FloatingTime() {
   const dateStr = now.toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
 
   return (
-    <div style={{
+    <div className="fusion-clock" style={{
       position: 'fixed', bottom: 24, right: 28, zIndex: 100,
       background: 'var(--card)', borderRadius: 16,
       boxShadow: '0 4px 24px rgba(255, 107, 53, 0.15), 0 1px 6px rgba(0,0,0,0.08)',
