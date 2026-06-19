@@ -60,7 +60,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ── ANIMATED 3D CUBE FIELD (OPTIMIZED) ── */
+/* ── ANIMATED 3D CUBE FIELD (FLOATING ONLY) ── */
 .cube-field {
   position: fixed;
   top: 0;
@@ -77,12 +77,12 @@ body {
 .cube-field .cube {
   position: absolute;
   transform-style: preserve-3d;
-  /* Consolidate into a single keyframe to optimize memory channels */
-  animation: cube-combined 30s linear infinite;
-  /* Force GPU rendering layers */
+  /* GPU acceleration */
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
 }
 
 .cube-field .face {
@@ -90,7 +90,6 @@ body {
   inset: 0;
   border: 1px solid rgba(246, 247, 221, 0.35);
   border-radius: 10px;
-  /* ⚠️ REMOVED backdrop-filter: blur(2px) for massive mobile performance gains */
 }
 
 /* Six faces of the cube — size set per-cube via --s custom property */
@@ -101,38 +100,48 @@ body {
 .cube-field .face.top    { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); background: rgba(246, 247, 221, 0.38); }
 .cube-field .face.bottom { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); background: rgba(201, 173, 127, 0.18); }
 
-/* Combined single animation timeline using only translate3d and rotate3d */
-@keyframes cube-combined {
-  0% {
-    transform: translate3d(0, 0, 0) rotate3d(1, 1, 1, 0deg);
-  }
-  25% {
-    transform: translate3d(18px, -28px, 10px) rotate3d(1, 1, 1, 90deg);
-  }
-  50% {
-    transform: translate3d(-12px, -10px, -10px) rotate3d(1, 1, 1, 180deg);
-  }
-  75% {
-    transform: translate3d(-22px, 22px, 6px) rotate3d(1, 1, 1, 270deg);
-  }
-  100% {
-    transform: translate3d(0, 0, 0) rotate3d(1, 1, 1, 360deg);
-  }
+/* Four varied float animations for visual interest */
+@keyframes float-subtle-1 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(18px, -16px, 8px); }
+  50% { transform: translate3d(-12px, 8px, -6px); }
+  75% { transform: translate3d(10px, -8px, 4px); }
 }
 
-/* Stagger each cube using single offsets */
-.cube-field .cube:nth-child(1)  { animation-delay: -0s; }
-.cube-field .cube:nth-child(2)  { animation-delay: -3s; }
-.cube-field .cube:nth-child(3)  { animation-delay: -7s; }
-.cube-field .cube:nth-child(4)  { animation-delay: -11s; }
-.cube-field .cube:nth-child(5)  { animation-delay: -1s; }
-.cube-field .cube:nth-child(6)  { animation-delay: -9s; }
-.cube-field .cube:nth-child(7)  { animation-delay: -14s; }
-.cube-field .cube:nth-child(8)  { animation-delay: -5s; }
-.cube-field .cube:nth-child(9)  { animation-delay: -17s; }
-.cube-field .cube:nth-child(10) { animation-delay: -2s; }
-.cube-field .cube:nth-child(11) { animation-delay: -19s; }
-.cube-field .cube:nth-child(12) { animation-delay: -8s; }
+@keyframes float-subtle-2 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-20px, 12px, -10px); }
+  50% { transform: translate3d(14px, -10px, 8px); }
+  75% { transform: translate3d(-8px, 6px, -5px); }
+}
+
+@keyframes float-subtle-3 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(16px, -14px, 6px); }
+  50% { transform: translate3d(-10px, 10px, -8px); }
+  75% { transform: translate3d(12px, -6px, 5px); }
+}
+
+@keyframes float-subtle-4 {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(-18px, 10px, -7px); }
+  50% { transform: translate3d(15px, -12px, 7px); }
+  75% { transform: translate3d(-6px, 8px, -4px); }
+}
+
+/* Assign varied durations and animations for organic feel */
+.cube-field .cube:nth-child(1)  { animation-name: float-subtle-1; animation-duration: 28s; animation-delay: -0s; }
+.cube-field .cube:nth-child(2)  { animation-name: float-subtle-2; animation-duration: 36s; animation-delay: -3s; }
+.cube-field .cube:nth-child(3)  { animation-name: float-subtle-3; animation-duration: 32s; animation-delay: -7s; }
+.cube-field .cube:nth-child(4)  { animation-name: float-subtle-4; animation-duration: 40s; animation-delay: -11s; }
+.cube-field .cube:nth-child(5)  { animation-name: float-subtle-1; animation-duration: 26s; animation-delay: -1s; }
+.cube-field .cube:nth-child(6)  { animation-name: float-subtle-2; animation-duration: 38s; animation-delay: -9s; }
+.cube-field .cube:nth-child(7)  { animation-name: float-subtle-3; animation-duration: 30s; animation-delay: -14s; }
+.cube-field .cube:nth-child(8)  { animation-name: float-subtle-4; animation-duration: 34s; animation-delay: -5s; }
+.cube-field .cube:nth-child(9)  { animation-name: float-subtle-1; animation-duration: 42s; animation-delay: -17s; }
+.cube-field .cube:nth-child(10) { animation-name: float-subtle-2; animation-duration: 29s; animation-delay: -2s; }
+.cube-field .cube:nth-child(11) { animation-name: float-subtle-3; animation-duration: 37s; animation-delay: -19s; }
+.cube-field .cube:nth-child(12) { animation-name: float-subtle-4; animation-duration: 31s; animation-delay: -8s; }
 
 @media (prefers-reduced-motion: reduce) {
   .cube-field .cube { animation: none; }

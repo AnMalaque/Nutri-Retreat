@@ -27,6 +27,7 @@ export default function CubeField() {
             width: c.size,
             height: c.size,
             ['--s' as string]: `${c.size}px`,
+            // Static initial rotation — animation provides the floating motion
             transform: `rotateX(${c.rx}deg) rotateY(${c.ry}deg) rotateZ(${c.rz}deg)`,
           }}
         >
