@@ -47,7 +47,7 @@ Track what you eat, see your macronutrient breakdown in real time, and understan
 | **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) + custom CSS design system |
 | **Typography** | [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts |
 | **Database** | [Supabase](https://supabase.com/) |
-| **Icons** | [Lucide React] ([https://luci ](https://lucide.dev/)|
+| **Icons** | [Lucide React](https://lucide.dev/)|
 
 ---
 
