@@ -1,0 +1,103 @@
+/* ── History Page Mobile Styles ── */
+
+.history-main {
+  padding: 28px 28px;
+}
+
+/* ── Tablet ── */
+
+@media (max-width: 1100px) {
+  .history-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 768px) {
+  .fusion-main {
+    margin-left: 0;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .history-main {
+    padding: 16px 16px;
+  }
+
+  /* Hero header */
+  .fusion-hero .history-hero-title {
+    font-size: 18px !important;
+  }
+
+  .fusion-hero .history-clear-btn {
+    font-size: 11px !important;
+    padding: 5px 10px !important;
+  }
+
+  /* Stats grid — 2 columns on mobile */
+  .history-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  /* Session card header — allow wrapping */
+  .history-session-header {
+    flex-wrap: wrap;
+    gap: 8px !important;
+  }
+
+  .history-session-date {
+    font-size: 13px !important;
+    flex: 1 1 100%;
+  }
+
+  .history-session-macros {
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 6px !important;
+  }
+
+  .history-session-macros span {
+    font-size: 10px !important;
+    padding: 2px 7px !important;
+  }
+
+  .history-session-kcal p:first-child {
+    font-size: 16px !important;
+  }
+
+  /* Detail table — horizontal scroll */
+  .history-detail-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .history-detail-table-wrap table {
+    min-width: 540px;
+  }
+
+  /* Footer */
+  .history-footer {
+    padding: 16px !important;
+  }
+}
+
+/* ── Small Mobile ── */
+
+@media (max-width: 480px) {
+  .history-main {
+    padding: 12px 12px;
+  }
+
+  .history-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .history-stats-grid .fusion-card {
+    padding: 12px 14px !important;
+  }
+
+  .history-stats-grid p:first-of-type {
+    font-size: 16px !important;
+  }
+}

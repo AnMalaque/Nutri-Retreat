@@ -1,4 +1,5 @@
 'use client'
+import './fel.css'
 import { useState, useEffect, useCallback } from 'react'
 import Sidebar from '@/components/Sidebar'
 import NutriDropdown from '@/components/NutriDropdown'
@@ -240,7 +241,7 @@ function FELContent() {
 
       {/* MAIN */}
       <div className="fusion-main">
-        <main style={{ padding: '28px 28px' }}>
+        <main className="fel-main">
 
           {/* PAGE HEADER */}
           <div className="fusion-hero" style={{ marginBottom: 24 }}>
@@ -271,7 +272,7 @@ function FELContent() {
           </div>
 
           {/* FOOD TYPE TABS */}
-          <div style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
+          <div className="fel-tabs" style={{ display: 'flex', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
             {FOOD_TABS.map((tab) => (
               <button
                 key={tab.value}
@@ -299,7 +300,7 @@ function FELContent() {
           </div>
 
           {/* FILTERS ROW */}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+          <div className="fel-filters-row" style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'flex-end', flexWrap: 'wrap' }}>
             {/* Search input with label */}
             <div style={{ flex: 1, minWidth: 220 }}>
               <label className="fusion-label">Search</label>
@@ -520,12 +521,12 @@ function FELContent() {
                 </div>
 
                 {/* PAGINATION */}
-                <div style={{
+                <div className="fel-pagination" style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                   padding: '12px 16px', borderTop: '1px solid var(--border)',
                   background: 'rgba(246,247,221,0.25)', flexWrap: 'wrap', gap: 8,
                 }}>
-                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                  <span className="fel-pagination-info" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
                     Showing {Math.min((page - 1) * pageSize + 1, sorted.length)}–{Math.min(page * pageSize, sorted.length)} of {sorted.length} items
                   </span>
                   <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -592,7 +593,7 @@ function FELContent() {
 
         </main>
 
-        <footer style={{
+        <footer className="fel-footer" style={{
           textAlign: 'center', padding: '20px 28px',
           borderTop: '1px solid var(--border)',
           fontSize: 12, color: 'var(--text-muted)',

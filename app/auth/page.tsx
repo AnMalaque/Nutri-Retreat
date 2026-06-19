@@ -1,4 +1,5 @@
 'use client'
+import './auth.css'
 import { toast } from 'sonner'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'

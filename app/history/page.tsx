@@ -1,4 +1,5 @@
 'use client'
+import './history.css'
 import { toast } from 'sonner'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
@@ -261,7 +262,7 @@ const handleDeleteSession = async (
       <Sidebar activePage="history" />
 
       <div className="fusion-main">
-        <main style={{ padding: '28px 28px' }}>
+        <main className="history-main">
 
           {/* PAGE HEADER */}
           <div className="fusion-hero" style={{ marginBottom: 24 }}>
@@ -295,7 +296,7 @@ const handleDeleteSession = async (
 
           {/* SUMMARY STATS */}
           {!loading && sessions.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+            <div className="history-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
               {[
                 { icon: <CalendarDays size={18} />,  label: 'Sessions',         val: allTime.sessions,                                              color: '#5B9BD5' },
                 { icon: <ClipboardList size={18} />, label: 'Total Entries',    val: allTime.entries,                                               color: '#C9AD7F' },
@@ -340,6 +341,7 @@ const handleDeleteSession = async (
 
                     {/* Session header */}
                     <div
+                      className="history-session-header"
                       onClick={() => toggleExpand(session.date)}
                       style={{
                         display: 'flex', alignItems: 'center', gap: 14,
@@ -349,13 +351,13 @@ const handleDeleteSession = async (
                       }}
                     >
                       <div style={{ flex: 1 }}>
-                        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{session.date}</p>
+                        <p className="history-session-date" style={{ fontSize: 14, fontWeight: 700, color: 'var(--text)' }}>{session.date}</p>
                         <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
                           {session.entries.length} item{session.entries.length !== 1 ? 's' : ''}
                         </p>
                       </div>
 
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                      <div className="history-session-macros" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         {[
                           { label: `C ${session.totals.carbs.toFixed(1)}g`,   color: '#F9A03F' },
                           { label: `P ${session.totals.protein.toFixed(1)}g`, color: '#5B9BD5' },
@@ -371,7 +373,7 @@ const handleDeleteSession = async (
                         ))}
                       </div>
 
-                      <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                      <div className="history-session-kcal" style={{ textAlign: 'right', flexShrink: 0 }}>
                         <p style={{ fontSize: 20, fontWeight: 700, color: 'var(--accent)', lineHeight: 1 }}>
                           {Math.round(session.totals.calories)}
                         </p>
@@ -401,6 +403,7 @@ const handleDeleteSession = async (
                     {/* Expanded entries table */}
                     {isOpen && (
                       <div style={{ borderTop: '1px solid var(--border)' }}>
+                        <div className="history-detail-table-wrap">
                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12 }}>
                           <thead>
                             <tr style={{ background: 'rgba(246,247,221,0.30)' }}>
@@ -491,6 +494,7 @@ const handleDeleteSession = async (
                             </tr>
                           </tfoot>
                         </table>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -500,7 +504,7 @@ const handleDeleteSession = async (
           )}
         </main>
 
-        <footer style={{
+        <footer className="history-footer" style={{
           textAlign: 'center', padding: '20px 28px',
           borderTop: '1px solid var(--border)',
           fontSize: 12, color: 'var(--text-muted)',

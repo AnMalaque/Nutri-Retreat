@@ -1,0 +1,105 @@
+/* ── FEL Page Mobile Styles ── */
+
+.fel-main {
+  padding: 28px 28px;
+}
+
+/* ── Tablet ── */
+
+@media (max-width: 1100px) {
+  .fel-filters-row {
+    flex-wrap: wrap;
+  }
+
+  .fel-filters-row > * {
+    min-width: 180px;
+    flex: 1 1 180px;
+  }
+}
+
+/* ── Mobile ── */
+
+@media (max-width: 768px) {
+
+  /* Lock the layout to the viewport — no page-level growth */
+  .fusion-layout {
+    height: 100dvh;
+    overflow: hidden;
+  }
+
+  .fusion-main {
+    margin-left: 0;
+    height: 100dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* room for bottom nav */
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+
+  .fel-main {
+    padding: 16px 16px;
+    gap: 14px;
+  }
+
+  /* Food type tabs — horizontal scroll strip */
+  .fel-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 6px !important;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+  }
+
+  .fel-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fel-tab-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Filters row — stack vertically */
+  .fel-filters-row {
+    flex-direction: column !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  .fel-filters-row > div {
+    min-width: unset !important;
+    width: 100% !important;
+    flex: unset !important;
+  }
+
+  /* Pagination — center and wrap */
+  .fel-pagination {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .fel-pagination-info {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Footer */
+  .fel-footer {
+    padding: 16px !important;
+  }
+}
+
+/* ── Small Mobile ── */
+
+@media (max-width: 480px) {
+  .fel-main {
+    padding: 12px 12px;
+  }
+
+  .fel-tab-btn span.tab-label {
+    display: none;
+  }
+}
