@@ -62,7 +62,7 @@ Track what you eat, see your macronutrient breakdown in real time, and understan
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/AnMalaque/ancie-nutri-retreat.git
+git clone https://github.com/AnMalaque/Nutri-Retreat.git
 cd ancie-nutri-retreat
 
 # 2. Install dependencies
