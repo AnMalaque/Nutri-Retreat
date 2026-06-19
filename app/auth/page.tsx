@@ -33,8 +33,16 @@ export default function AuthPage() {
         router.push('/dashboard')
       }
     } catch (err: any) {
-      toast.error(err.message)
-    } finally {
+      const message = err?.message || ''
+
+      if (message.includes('Password should contain')) {
+        toast.error(
+          'Password must contain an uppercase letter, lowercase letter, number, and special character.'
+        )
+      } else {
+        toast.error(message)
+      }
+    }finally {
       setLoading(false)
     }
   }
