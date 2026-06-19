@@ -1,6 +1,6 @@
 <div align="center">
 
-# Ancie Nutri Retreat
+# Nutri Retreat
 
 ### *A cozy Filipino food exchange tracker for mindful eating*
 
@@ -21,7 +21,7 @@
 
 ## What is this?
 
-**Ancie Nutri Retreat** is a warm, web-based nutrition tracker built around the **Filipino Food Exchange List (FEL)** — a dietary reference system used by Filipino nutritionists and dietitians. Instead of guessing calories from scratch, you work with standardized food exchanges across five food groups: meat, rice, vegetables, fruit, and milk.
+**Nutri Retreat** is a warm, web-based nutrition tracker built around the **Filipino Food Exchange List (FEL)** — a dietary reference system used by Filipino nutritionists and dietitians. Instead of guessing calories from scratch, you work with standardized food exchanges across five food groups: meat, rice, vegetables, fruit, and milk.
 
 Track what you eat, see your macronutrient breakdown in real time, and understand your energy intake using the **Atwater general factors** (Carbs × 4, Protein × 4, Fat × 9).
 
@@ -33,9 +33,7 @@ Track what you eat, see your macronutrient breakdown in real time, and understan
 - **Live Macro Dashboard** — real-time carbohydrate, protein, and fat totals as you log
 - **Energy Breakdown** — Atwater-calculated calorie panel per macronutrient
 - **Food Log** — add, scale by grams/ml, and remove individual entries
-- **Exchange Reference Panel** — quick-glance FEL exchange values for all food groups
-- **Live Clock** — floating time pill localized to Philippine time (`en-PH`)
-- **Parallax Background** — animated ambient blobs and dot-grid that breathe behind the cards
+- **Parallax Background** — animated ambient cubs that breathe behind the cards
 - **Soft Glassmorphic UI** — warm orange-accented design system with layered card depth
 
 ---
@@ -49,7 +47,7 @@ Track what you eat, see your macronutrient breakdown in real time, and understan
 | **Styling** | [Tailwind CSS 3](https://tailwindcss.com/) + custom CSS design system |
 | **Typography** | [Inter](https://fonts.google.com/specimen/Inter) via Google Fonts |
 | **Database** | [Supabase](https://supabase.com/) |
-| **Icons** | Emoji + inline SVG |
+| **Icons** | [Lucide React] ([https://luci ](https://lucide.dev/)|
 
 ---
 
