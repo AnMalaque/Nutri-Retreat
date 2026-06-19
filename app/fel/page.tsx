@@ -1,6 +1,8 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import Sidebar from '@/components/Sidebar'
+import NutriDropdown from '@/components/NutriDropdown'
+import type { DropdownOption } from '@/components/NutriDropdown'
 import {
   Search,
   Beef,
@@ -54,40 +56,46 @@ const FOOD_TABS: { value: FoodType; label: string; icon: React.ReactNode; color:
   { value: 'fruit',     label: 'Fruit',     icon: <Apple size={15} />,    color: '#F9A03F' },
 ]
 
-const MEAT_FILTERS = [
+// Convert to DropdownOption format
+const MEAT_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Fat Levels' },
   { value: 'low',    label: 'Low Fat' },
   { value: 'medium', label: 'Medium Fat' },
   { value: 'high',   label: 'High Fat' },
 ]
 
-const RICE_FILTERS = [
+const RICE_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Types' },
   { value: 'low',    label: 'Rice A – Low Protein' },
   { value: 'medium', label: 'Rice B – Medium Protein' },
   { value: 'high',   label: 'Rice C – High Protein' },
 ]
 
-const MILK_FILTERS = [
+const MILK_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Types' },
   { value: 'whole',   label: 'Whole Milk' },
   { value: 'low_fat', label: 'Low Fat' },
   { value: 'non_fat', label: 'Non-Fat / Skim' },
 ]
 
-const VEGETABLE_CATEGORY_FILTERS = [
+const VEGETABLE_CATEGORY_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Vegetables' },
   { value: 'fresh', label: 'Fresh' },
   { value: 'processed', label: 'Processed' },
 ]
 
-const VEGETABLE_PREPARATION_FILTERS = [
+const VEGETABLE_PREPARATION_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Preparations' },
   { value: 'raw', label: 'Raw' },
   { value: 'cooked', label: 'Cooked' },
 ]
 
-const PAGE_SIZES = [10, 25, 50, 100]
+const PAGE_SIZE_OPTIONS: DropdownOption[] = [
+  { value: '10', label: 'Show 10 per page' },
+  { value: '25', label: 'Show 25 per page' },
+  { value: '50', label: 'Show 50 per page' },
+  { value: '100', label: 'Show 100 per page' },
+]
 
 const FAT_BADGE: Record<string, { label: string; color: string; bg: string }> = {
   low:    { label: 'Low Fat',  color: '#4caf50', bg: 'rgba(76,175,80,0.12)'   },
@@ -188,16 +196,16 @@ function FELContent() {
     else { setSortKey(key); setSortDir('asc') }
   }
 
-  const subFilters =
-  activeType === 'meat'
-    ? MEAT_FILTERS
-    : activeType === 'rice'
-    ? RICE_FILTERS
-    : activeType === 'milk'
-    ? MILK_FILTERS
-    : activeType === 'vegetable'
-    ? VEGETABLE_CATEGORY_FILTERS
-    : null
+  const subFilters: DropdownOption[] | null =
+    activeType === 'meat'
+      ? MEAT_FILTERS
+      : activeType === 'rice'
+      ? RICE_FILTERS
+      : activeType === 'milk'
+      ? MILK_FILTERS
+      : activeType === 'vegetable'
+      ? VEGETABLE_CATEGORY_FILTERS
+      : null
 
   const SortTh = ({ col, label }: { col: SortKey; label: string }) => (
     <th
@@ -291,69 +299,76 @@ function FELContent() {
           </div>
 
           {/* FILTERS ROW */}
-          <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ position: 'relative', flex: 1, minWidth: 220 }}>
-              <span style={{
-                position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
-                color: 'var(--text-muted)', pointerEvents: 'none',
-              }}>
-                <Search size={15} />
-              </span>
-              <input
-                type="text"
-                className="fusion-input"
-                style={{ paddingLeft: 36 }}
-                placeholder="Search Filipino or English name…"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
+          <div style={{ display: 'flex', gap: 12, marginBottom: 20, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            {/* Search input with label */}
+            <div style={{ flex: 1, minWidth: 220 }}>
+              <label className="fusion-label">Search</label>
+              <div style={{ position: 'relative' }}>
+                <span style={{
+                  position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)',
+                  color: 'var(--text-muted)', pointerEvents: 'none',
+                }}>
+                  <Search size={15} />
+                </span>
+                <input
+                  type="text"
+                  className="fusion-input"
+                  style={{ paddingLeft: 36 }}
+                  placeholder="Search Filipino or English name…"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {/* Category Filter Dropdown */}
             {subFilters && (
-              <select
-                className="fusion-select"
-                value={filter}
-                onChange={e => {
-                  setFilter(e.target.value)
-                  setVegPreparation('')
-                }}
-                style={{ minWidth: 180 }}
-              >
-                {subFilters.map(f => (
-                  <option key={f.value} value={f.value}>
-                    {f.label}
-                  </option>
-                ))}
-              </select>
+              <div style={{ minWidth: 220 }}>
+                <NutriDropdown
+                  label={
+                    activeType === 'meat' ? 'Fat Level' :
+                    activeType === 'rice' ? 'Protein Level' :
+                    activeType === 'milk' ? 'Milk Type' :
+                    activeType === 'vegetable' ? 'Category' :
+                    'Filter'
+                  }
+                  options={subFilters}
+                  value={filter}
+                  onChange={(value) => {
+                    setFilter(value)
+                    setVegPreparation('')
+                  }}
+                  placeholder="Select option"
+                />
+              </div>
             )}
 
+            {/* Vegetable Preparation Dropdown */}
             {activeType === 'vegetable' && filter === 'fresh' && (
-              <select
-                className="fusion-select"
-                value={vegPreparation}
-                onChange={e => setVegPreparation(e.target.value)}
-                style={{ minWidth: 180 }}
-              >
-                {VEGETABLE_PREPARATION_FILTERS.map(f => (
-                  <option key={f.value} value={f.value}>
-                    {f.label}
-                  </option>
-                ))}
-              </select>
+              <div style={{ minWidth: 220 }}>
+                <NutriDropdown
+                  label="Preparation"
+                  options={VEGETABLE_PREPARATION_FILTERS}
+                  value={vegPreparation}
+                  onChange={setVegPreparation}
+                  placeholder="Select preparation"
+                />
+              </div>
             )}
-          </div>
 
-            <select
-              className="fusion-select"
-              value={pageSize}
-              onChange={e => { setPageSize(Number(e.target.value)); setPage(1) }}
-              style={{ minWidth: 100 }}
-            >
-              {PAGE_SIZES.map(s => (
-                <option key={s} value={s}>Show {s}</option>
-              ))}
-            </select>
+            {/* Page Size Dropdown */}
+            <div style={{ minWidth: 180 }}>
+              <NutriDropdown
+                label="Page Size"
+                options={PAGE_SIZE_OPTIONS}
+                value={String(pageSize)}
+                onChange={(value) => {
+                  setPageSize(Number(value))
+                  setPage(1)
+                }}
+                placeholder="Select size"
+              />
+            </div>
           </div>
 
           {/* TABLE CARD */}

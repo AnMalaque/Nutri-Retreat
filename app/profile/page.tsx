@@ -1,23 +1,59 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Sidebar from '@/components/Sidebar'
+import NutriDropdown from '@/components/NutriDropdown'
+import type { DropdownOption } from '@/components/NutriDropdown'
 import AuthGuard from '@/components/AuthGuard'
 import { getProfile, upsertProfile, EMPTY_PROFILE } from '@/lib/services/profiles'
 import type { Profile } from '@/lib/services/profiles'
 import {
-  User, Save, ChevronDown, X, Plus,
+  User, Save, X,
   Ruler, Stethoscope, Dumbbell, Wheat,
 } from 'lucide-react'
 
 // ── Preset options ─────────────────────────────────────────────────────────
 const PRESETS = {
-  sex: ['Male', 'Female', 'Prefer not to say'],
+  sex: [
+    { value: 'Male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Prefer not to say', label: 'Prefer not to say' },
+  ] as DropdownOption[],
+
   physical_activity_level: [
-    'Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Extra Active',
-  ],
+    { value: 'Sedentary', label: 'Sedentary' },
+    { value: 'Lightly Active', label: 'Lightly Active' },
+    { value: 'Moderately Active', label: 'Moderately Active' },
+    { value: 'Very Active', label: 'Very Active' },
+    { value: 'Extra Active', label: 'Extra Active' },
+  ] as DropdownOption[],
+
   sleep_pattern: [
-    'Less than 5 hrs', '5–6 hrs', '6–7 hrs', '7–8 hrs', 'More than 8 hrs',
-  ],
+    { value: 'Less than 5 hrs', label: 'Less than 5 hrs' },
+    { value: '5–6 hrs', label: '5–6 hrs' },
+    { value: '6–7 hrs', label: '6–7 hrs' },
+    { value: '7–8 hrs', label: '7–8 hrs' },
+    { value: 'More than 8 hrs', label: 'More than 8 hrs' },
+  ] as DropdownOption[],
+
+  occupation: [
+    { value: 'Student', label: 'Student' },
+    { value: 'Office Worker', label: 'Office Worker' },
+    { value: 'Healthcare Professional', label: 'Healthcare Professional' },
+    { value: 'Teacher / Educator', label: 'Teacher / Educator' },
+    { value: 'Engineer / Technician', label: 'Engineer / Technician' },
+    { value: 'Driver / Courier', label: 'Driver / Courier' },
+    { value: 'Construction / Laborer', label: 'Construction / Laborer' },
+    { value: 'Retail / Sales', label: 'Retail / Sales' },
+    { value: 'Food Service', label: 'Food Service' },
+    { value: 'Farmer / Agriculture', label: 'Farmer / Agriculture' },
+    { value: 'Business Owner', label: 'Business Owner' },
+    { value: 'Freelancer / Remote Worker', label: 'Freelancer / Remote Worker' },
+    { value: 'Homemaker', label: 'Homemaker' },
+    { value: 'Military / Police / Security', label: 'Military / Police / Security' },
+    { value: 'Retired', label: 'Retired' },
+    { value: 'Unemployed', label: 'Unemployed' },
+  ] as DropdownOption[],
+
   medical_conditions: [
     'Hypertension', 'Type 1 Diabetes', 'Type 2 Diabetes', 'Asthma',
     'Chronic Kidney Disease', 'Heart Disease', 'Stroke', 'Cancer',
@@ -25,37 +61,39 @@ const PRESETS = {
     'Anemia', 'Depression', 'Anxiety', 'PCOS', 'Gout', 'Fatty Liver Disease',
     'High Cholesterol', 'None',
   ],
+
   medications: [
     'Amlodipine', 'Losartan', 'Metformin', 'Insulin', 'Atorvastatin',
     'Omeprazole', 'Aspirin', 'Furosemide', 'Salbutamol', 'Levothyroxine',
     'Prednisone', 'Metoprolol', 'Lisinopril', 'Glimepiride', 'Allopurinol',
     'Vitamin D', 'Iron Supplement', 'Calcium Supplement', 'Multivitamins', 'None',
   ],
+
   allergies: [
     'Peanuts', 'Tree Nuts', 'Shellfish', 'Fish', 'Eggs', 'Milk / Dairy',
     'Wheat / Gluten', 'Soy', 'Sesame', 'Sulfites', 'Penicillin',
     'NSAIDs (e.g. Ibuprofen)', 'Aspirin', 'Latex', 'Dust Mites',
     'Pollen', 'Mold', 'Animal Dander', 'Insect Venom', 'None',
   ],
+
   dietary_restrictions: [
     'Vegetarian', 'Vegan', 'Pescatarian', 'Halal', 'Kosher',
     'Gluten-Free', 'Dairy-Free', 'Low Sodium', 'Low Sugar', 'Low Fat',
     'Low Carb / Keto', 'High Protein', 'Diabetic Diet', 'Renal Diet',
     'Low Purine (Gout Diet)', 'None',
   ],
+
   family_health_history: [
     'Hypertension', 'Type 2 Diabetes', 'Heart Disease', 'Stroke',
     'Cancer', 'High Cholesterol', 'Obesity', 'Asthma', 'Kidney Disease',
     'Thyroid Disorder', 'Mental Illness', "Alzheimer's / Dementia",
     'Osteoporosis', 'Gout', 'PCOS', 'None',
   ],
-  occupation: [
-    'Student', 'Office Worker', 'Healthcare Professional', 'Teacher / Educator',
-    'Engineer / Technician', 'Driver / Courier', 'Construction / Laborer',
-    'Retail / Sales', 'Food Service', 'Farmer / Agriculture',
-    'Business Owner', 'Freelancer / Remote Worker', 'Homemaker',
-    'Military / Police / Security', 'Retired', 'Unemployed',
-  ],
+}
+
+// ── Helpers to convert string[] to DropdownOption[] ────────────────────────
+function toOptions(arr: string[]): DropdownOption[] {
+  return arr.map(s => ({ value: s, label: s }))
 }
 
 // ── Sub-components ─────────────────────────────────────────────────────────
@@ -116,36 +154,29 @@ function NumberInput({ value, onChange, placeholder }: {
   )
 }
 
-function SelectInput({ value, onChange, options, placeholder }: {
-  value: string; onChange: (v: string) => void; options: string[]; placeholder?: string
-}) {
-  return (
-    <div style={{ position: 'relative' }}>
-      <select
-        value={value} onChange={e => onChange(e.target.value)}
-        style={{ ...inputStyle, appearance: 'none', paddingRight: 32, cursor: 'pointer' }}
-      >
-        <option value="">{placeholder ?? 'Select…'}</option>
-        {options.map(o => <option key={o} value={o}>{o}</option>)}
-      </select>
-      <ChevronDown size={14} style={{
-        position: 'absolute', right: 10, top: '50%',
-        transform: 'translateY(-50%)', pointerEvents: 'none',
-        color: 'var(--text-muted)',
-      }} />
-    </div>
-  )
-}
-
+// ── TagSelect — uses NutriDropdown for the add picker ─────────────────────
 function TagSelect({ value, onChange, options, placeholder }: {
-  value: string[]; onChange: (v: string[]) => void; options: string[]; placeholder?: string
+  value: string[]
+  onChange: (v: string[]) => void
+  options: string[]
+  placeholder?: string
 }) {
   const available = options.filter(o => !value.includes(o))
-  const add    = (opt: string) => { if (!opt || value.includes(opt)) return; onChange([...value, opt]) }
   const remove = (opt: string) => onChange(value.filter(v => v !== opt))
+
+  const dropdownOptions: DropdownOption[] = [
+    { value: '', label: placeholder ?? 'Add…', disabled: true },
+    ...toOptions(available),
+  ]
+
+  const handleAdd = (selected: string) => {
+    if (!selected || value.includes(selected)) return
+    onChange([...value, selected])
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+      {/* Selected tags */}
       {value.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {value.map(tag => (
@@ -160,6 +191,7 @@ function TagSelect({ value, onChange, options, placeholder }: {
               <button
                 onClick={() => remove(tag)}
                 style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: 'inherit' }}
+                type="button"
               >
                 <X size={11} />
               </button>
@@ -167,22 +199,15 @@ function TagSelect({ value, onChange, options, placeholder }: {
           ))}
         </div>
       )}
+
+      {/* NutriDropdown picker — resets to '' after selection */}
       {available.length > 0 && (
-        <div style={{ position: 'relative' }}>
-          <select
-            value=""
-            onChange={e => { add(e.target.value); e.target.value = '' }}
-            style={{ ...inputStyle, appearance: 'none', paddingRight: 32, cursor: 'pointer', color: value.length === 0 ? 'var(--text)' : 'var(--text-muted)' }}
-          >
-            <option value="">{placeholder ?? 'Add…'}</option>
-            {available.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
-          <Plus size={14} style={{
-            position: 'absolute', right: 10, top: '50%',
-            transform: 'translateY(-50%)', pointerEvents: 'none',
-            color: 'var(--text-muted)',
-          }} />
-        </div>
+        <NutriDropdown
+          options={toOptions(available)}
+          value=""
+          onChange={v => { handleAdd(v) }}
+          placeholder={placeholder ?? 'Add…'}
+        />
       )}
     </div>
   )
@@ -215,9 +240,7 @@ function ProfileContent() {
     setForm(prev => ({ ...prev, [key]: value }))
 
   const handleSave = async () => {
-    setSaving(true)
-    setSaved(false)
-    setError(null)
+    setSaving(true); setSaved(false); setError(null)
     try {
       await upsertProfile(form)
       setSaved(true)
@@ -229,7 +252,6 @@ function ProfileContent() {
     }
   }
 
-  // Derived initial for the hero icon — updates live as user types
   const heroInitial = form.first_name?.trim()?.[0]?.toUpperCase() || '?'
 
   const bmi = (form.weight_kg !== '' && form.height_cm !== '' && Number(form.height_cm) > 0)
@@ -258,7 +280,6 @@ function ProfileContent() {
 
           {/* HERO */}
           <div className="fusion-hero" style={{ marginBottom: 28 }}>
-            {/* Live initial icon */}
             <div style={{
               width: 56, height: 56, borderRadius: 16, flexShrink: 0,
               background: 'linear-gradient(135deg, #C9AD7F, #A67C5B)',
@@ -269,17 +290,13 @@ function ProfileContent() {
               {heroInitial}
             </div>
             <div style={{ zIndex: 1 }}>
-              <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2, color: 'var(--text)' }}>
-                My Profile
-              </p>
+              <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.2, color: 'var(--text)' }}>My Profile</p>
               <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 3 }}>
                 Personal health information · Used to personalize your nutrition plan
               </p>
             </div>
             <div style={{ marginLeft: 'auto', zIndex: 1, display: 'flex', alignItems: 'center', gap: 10 }}>
-              {saved && (
-                <span style={{ fontSize: 12, color: '#7BAD6E', fontWeight: 600 }}>✓ Saved</span>
-              )}
+              {saved && <span style={{ fontSize: 12, color: '#7BAD6E', fontWeight: 600 }}>✓ Saved</span>}
               <button
                 className="fusion-btn"
                 style={{ padding: '9px 20px', opacity: saving ? 0.6 : 1 }}
@@ -323,10 +340,20 @@ function ProfileContent() {
                     <NumberInput value={form.age} onChange={v => set('age', v)} placeholder="25" />
                   </Field>
                   <Field label="Sex">
-                    <SelectInput value={form.sex} onChange={v => set('sex', v)} options={PRESETS.sex} />
+                    <NutriDropdown
+                      options={PRESETS.sex}
+                      value={form.sex}
+                      onChange={v => set('sex', v)}
+                      placeholder="Select sex"
+                    />
                   </Field>
                   <Field label="Occupation">
-                    <SelectInput value={form.occupation} onChange={v => set('occupation', v)} options={PRESETS.occupation} placeholder="Select occupation…" />
+                    <NutriDropdown
+                      options={PRESETS.occupation}
+                      value={form.occupation}
+                      onChange={v => set('occupation', v)}
+                      placeholder="Select occupation"
+                    />
                   </Field>
                 </div>
               </div>
@@ -369,19 +396,19 @@ function ProfileContent() {
                 <SectionHeader icon={<Dumbbell size={16} />} title="Lifestyle" />
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                   <Field label="Physical Activity Level">
-                    <SelectInput
+                    <NutriDropdown
+                      options={PRESETS.physical_activity_level}
                       value={form.physical_activity_level}
                       onChange={v => set('physical_activity_level', v)}
-                      options={PRESETS.physical_activity_level}
-                      placeholder="Select activity level…"
+                      placeholder="Select activity level"
                     />
                   </Field>
                   <Field label="Sleep Pattern (hours/night)">
-                    <SelectInput
+                    <NutriDropdown
+                      options={PRESETS.sleep_pattern}
                       value={form.sleep_pattern}
                       onChange={v => set('sleep_pattern', v)}
-                      options={PRESETS.sleep_pattern}
-                      placeholder="Select sleep pattern…"
+                      placeholder="Select sleep pattern"
                     />
                   </Field>
                 </div>

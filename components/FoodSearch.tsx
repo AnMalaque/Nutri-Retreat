@@ -13,6 +13,8 @@ import{
   Apple,
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import NutriDropdown from '@/components/NutriDropdown'
+import type { DropdownOption } from '@/components/NutriDropdown'
 
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
 
@@ -45,33 +47,35 @@ const FOOD_TYPES: { value: FoodType; label: string; icon: React.ReactNode }[] = 
   { value: 'fruit',     label: 'Fruit',     icon: <Apple /> },
 ]
 
-const MEAT_FILTERS = [
+// Convert filter arrays to DropdownOption format
+const MEAT_FILTERS: DropdownOption[] = [
   { value: '', label: 'All fat levels' },
   { value: 'low',    label: '🟢 Low Fat (41 kcal/exchange)' },
   { value: 'medium', label: '🟡 Medium Fat (86 kcal/exchange)' },
   { value: 'high',   label: '🔴 High Fat (122 kcal/exchange)' },
 ]
 
-const RICE_FILTERS = [
+const RICE_FILTERS: DropdownOption[] = [
   { value: '', label: 'All types' },
   { value: 'low',    label: 'Rice A – Low Protein (92 kcal)' },
   { value: 'medium', label: 'Rice B – Medium Protein (100 kcal)' },
   { value: 'high',   label: 'Rice C – High Protein (108 kcal)' },
 ]
 
-const MILK_FILTERS = [
+const MILK_FILTERS: DropdownOption[] = [
   { value: '', label: 'All types' },
   { value: 'whole',   label: 'Whole (170 kcal/exchange)' },
   { value: 'low_fat', label: 'Low Fat (125 kcal/exchange)' },
   { value: 'non_fat', label: 'Non-Fat / Skim (80 kcal/exchange)' },
 ]
-const VEGETABLE_CATEGORY_FILTERS = [
+
+const VEGETABLE_CATEGORY_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Vegetables' },
   { value: 'fresh', label: 'Fresh' },
   { value: 'processed', label: 'Processed' },
 ]
 
-const VEGETABLE_PREPARATION_FILTERS = [
+const VEGETABLE_PREPARATION_FILTERS: DropdownOption[] = [
   { value: '', label: 'All Preparations' },
   { value: 'raw', label: 'Raw' },
   { value: 'cooked', label: 'Cooked' },
@@ -155,16 +159,18 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
   const previewProt = ratio * (selectedFood?.protein_g       || 0)
   const previewFat  = ratio * (selectedFood?.fat_g           || 0)
 
-    const subFilters =
-  selectedType === 'meat'
-    ? MEAT_FILTERS
-    : selectedType === 'rice'
-    ? RICE_FILTERS
-    : selectedType === 'milk'
-    ? MILK_FILTERS
-    : selectedType === 'vegetable'
-    ? VEGETABLE_CATEGORY_FILTERS
-    : null
+  // Get the appropriate sub-filters based on food type
+  const subFilters: DropdownOption[] | null =
+    selectedType === 'meat'
+      ? MEAT_FILTERS
+      : selectedType === 'rice'
+      ? RICE_FILTERS
+      : selectedType === 'milk'
+      ? MILK_FILTERS
+      : selectedType === 'vegetable'
+      ? VEGETABLE_CATEGORY_FILTERS
+      : null
+
   return (
     <div className="fusion-card">
       <h2 className="fusion-card-title"><BadgePlus /> Add Food to Log</h2>
@@ -182,37 +188,39 @@ export default function FoodSearch({ onAddFood }: FoodSearchProps) {
         ))}
       </div>
 
-      {/* Sub-filter */}
-      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-  {subFilters && (
-    <select
-      className="fusion-select"
-      value={filter}
-      onChange={(e) => {
-        setFilter(e.target.value)
-        setVegPreparation('')
-      }}
-    >
-      {subFilters.map((f) => (
-        <option key={f.value} value={f.value}>
-          {f.label}
-        </option>
-      ))}
-    </select>
-  )}
+      {/* Sub-filter using NutriDropdown */}
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+        {subFilters && (
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <NutriDropdown
+              label={selectedType === 'meat' ? 'Fat Level' : 
+                     selectedType === 'rice' ? 'Protein Level' :
+                     selectedType === 'milk' ? 'Milk Type' :
+                     selectedType === 'vegetable' ? 'Category' : 'Filter'}
+              options={subFilters}
+              value={filter}
+              onChange={(value) => {
+                setFilter(value)
+                setVegPreparation('')
+              }}
+              placeholder="Select option"
+            />
+          </div>
+        )}
 
-  {selectedType === 'vegetable' && filter === 'fresh' && (
-    <select
-      className="fusion-select"
-      value={vegPreparation}
-      onChange={(e) => setVegPreparation(e.target.value)}
-    >
-      <option value="">All Preparations</option>
-      <option value="raw">Raw</option>
-      <option value="cooked">Cooked</option>
-    </select>
-  )}
-</div>
+        {/* Vegetable preparation dropdown (shown only when fresh vegetables selected) */}
+        {selectedType === 'vegetable' && filter === 'fresh' && (
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <NutriDropdown
+              label="Preparation"
+              options={VEGETABLE_PREPARATION_FILTERS}
+              value={vegPreparation}
+              onChange={setVegPreparation}
+              placeholder="Select preparation"
+            />
+          </div>
+        )}
+      </div>
 
       {/* Search */}
       <div style={{ position: 'relative', marginBottom: 10 }}>
