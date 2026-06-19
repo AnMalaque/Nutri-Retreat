@@ -27,7 +27,7 @@ export default function AuthPage() {
     try {
       if (isLogin) {
         await signIn(email, password)
-        router.push('/dashboard')
+        router.push('/dashboard') 
       } else {
         await signUp(email, password)
         toast.success('Account created successfully!')

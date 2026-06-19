@@ -4,6 +4,7 @@ import CubeField from "@/components/CubeField";
 import { Toaster } from 'sonner'
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import NextTopLoader from 'nextjs-toploader';
 
 export const metadata: Metadata = {
   title: "Nutri Retreat – Filipino Food Exchange Tracker",
@@ -27,6 +28,14 @@ export default function RootLayout({
       </head>
       <body>
         <CubeField />
+        <NextTopLoader
+          color="linear-gradient(to right, #C9AD7F, #A67C5B, #C9AD7F)"
+          height={4}
+          shadow="0 0 12px rgba(201, 173, 127, 0.4), 0 0 24px rgba(166, 124, 91, 0.2)"
+          showSpinner={false}
+          easing="ease"
+          speed={400}
+        />
         {children}
         <Toaster
           richColors
