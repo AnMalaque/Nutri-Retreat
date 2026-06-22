@@ -1,0 +1,531 @@
+/* ── Onboarding Wizard Styles ── */
+
+.fusion-onboarding-wrap {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--fusion-primary-rgb, 255 200 150), 0.03),
+    rgba(var(--fusion-accent-rgb, 200 150 255), 0.03)
+  );
+}
+
+.fusion-onboarding-glow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.fusion-onboarding-glow span {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.4;
+  mix-blend-mode: screen;
+}
+
+.fusion-onboarding-glow span:nth-child(1) {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(255, 200, 100, 0.3), transparent);
+  top: -100px;
+  right: -100px;
+  filter: blur(80px);
+  animation: float 15s ease-in-out infinite;
+}
+
+.fusion-onboarding-glow span:nth-child(2) {
+  width: 250px;
+  height: 250px;
+  background: radial-gradient(circle, rgba(200, 150, 255, 0.2), transparent);
+  bottom: -50px;
+  left: -50px;
+  filter: blur(60px);
+  animation: float-reverse 18s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(40px, -40px);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-40px, 40px);
+  }
+}
+
+.fusion-progress-container {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.fusion-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.fusion-progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 200, 100, 0.8),
+    rgba(200, 150, 255, 0.8)
+  );
+  border-radius: 999px;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 12px rgba(255, 200, 100, 0.4);
+}
+
+.fusion-onboarding-card {
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  z-index: 1;
+  padding: 40px;
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Step Header ── */
+
+.fusion-step-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.fusion-step-number {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(var(--fusion-primary-rgb, 255 200 150), 0.7);
+  margin-bottom: 8px;
+}
+
+.fusion-step-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, rgb(255 200 100), rgb(200 150 255));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.fusion-step-subtitle {
+  font-size: 14px;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.6);
+  margin: 0;
+}
+
+/* ── Step Form ── */
+
+.fusion-step-form {
+  margin: 28px 0;
+}
+
+.fusion-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fusion-input-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.7);
+}
+
+.fusion-input-suffix {
+  position: absolute;
+  right: 56px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.5);
+  pointer-events: none;
+}
+
+/* ── Radio Group ── */
+
+.fusion-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fusion-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.05);
+  border: 1px solid rgba(var(--fusion-primary-rgb, 255 200 150), 0.1);
+}
+
+.fusion-radio-item:hover {
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.1);
+  border-color: rgba(var(--fusion-primary-rgb, 255 200 150), 0.2);
+}
+
+.fusion-radio-input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: rgb(255 200 100);
+}
+
+.fusion-radio-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.8);
+}
+
+/* ── Card Selectable ── */
+
+.fusion-card-selectable {
+  display: flex;
+  cursor: pointer;
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.05);
+  border: 2px solid rgba(var(--fusion-primary-rgb, 255 200 150), 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fusion-card-selectable:hover {
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.08);
+  border-color: rgba(var(--fusion-primary-rgb, 255 200 150), 0.2);
+  transform: translateY(-2px);
+}
+
+.fusion-card-selectable.selected {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 100, 0.15),
+    rgba(200, 150, 255, 0.1)
+  );
+  border-color: rgb(255 200 100);
+  box-shadow: 0 0 20px rgba(255, 200, 100, 0.2);
+}
+
+.fusion-card-select-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.fusion-card-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.9);
+  margin: 0 0 4px 0;
+}
+
+.fusion-card-description {
+  font-size: 13px;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.6);
+  margin: 0;
+}
+
+.fusion-card-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: rgb(255 200 100);
+}
+
+/* ── Info Box ── */
+
+.fusion-info-box {
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.08);
+  border: 1px solid rgba(var(--fusion-primary-rgb, 255 200 150), 0.15);
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.7);
+}
+
+.fusion-info-box p {
+  margin: 0;
+  font-size: 13px;
+}
+
+/* ── Button Group ── */
+
+.fusion-button-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.fusion-btn-outline {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid rgba(var(--fusion-primary-rgb, 255 200 150), 0.2);
+  background: transparent;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fusion-btn-outline:hover:not(:disabled) {
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.1);
+  border-color: rgba(var(--fusion-primary-rgb, 255 200 150), 0.3);
+}
+
+.fusion-btn-outline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Review Section ── */
+
+.fusion-review-section {
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(var(--fusion-primary-rgb, 255 200 150), 0.05);
+  border: 1px solid rgba(var(--fusion-primary-rgb, 255 200 150), 0.15);
+}
+
+.fusion-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.fusion-review-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.8);
+  margin: 0;
+}
+
+.fusion-review-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.fusion-review-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fusion-review-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.5);
+}
+
+.fusion-review-value {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.9);
+}
+
+/* ── Confirmation Box ── */
+
+.fusion-confirmation-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 200, 100, 0.1),
+    rgba(200, 150, 255, 0.08)
+  );
+  border: 1px solid rgba(255, 200, 100, 0.2);
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.8);
+}
+
+.fusion-confirmation-box svg {
+  color: rgb(255 200 100);
+  flex-shrink: 0;
+}
+
+.fusion-confirmation-box p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* ── Step Indicator ── */
+
+.fusion-step-indicator {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  color: rgba(var(--fusion-text-rgb, 40 40 40), 0.5);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--fusion-primary-rgb, 255 200 150), 0.1);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ── Utility Classes ── */
+
+.w-full {
+  width: 100%;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.mt-2 {
+  margin-top: 8px;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mt-6 {
+  margin-top: 24px;
+}
+
+.space-y-3 > * + * {
+  margin-top: 12px;
+}
+
+.space-y-4 > * + * {
+  margin-top: 16px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ── Responsive Design ── */
+
+@media (max-width: 768px) {
+  .fusion-onboarding-wrap {
+    padding: 24px 16px;
+    justify-content: flex-start;
+    padding-top: 32px;
+  }
+
+  .fusion-progress-container {
+    margin-bottom: 24px;
+  }
+
+  .fusion-onboarding-card {
+    padding: 28px 20px;
+    border-radius: 24px;
+  }
+
+  .fusion-step-title {
+    font-size: 24px;
+  }
+
+  .fusion-step-header {
+    margin-bottom: 24px;
+  }
+
+  .fusion-review-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fusion-step-indicator {
+    bottom: 20px;
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fusion-onboarding-wrap {
+    padding: 16px 12px;
+    padding-top: 24px;
+  }
+
+  .fusion-onboarding-card {
+    padding: 22px 16px;
+    border-radius: 20px;
+  }
+
+  .fusion-step-title {
+    font-size: 20px;
+  }
+
+  .fusion-step-number {
+    font-size: 11px;
+  }
+
+  .fusion-button-group {
+    gap: 8px;
+  }
+
+  .fusion-btn-outline,
+  .fusion-btn-solid {
+    padding: 11px 16px;
+    font-size: 13px;
+  }
+}

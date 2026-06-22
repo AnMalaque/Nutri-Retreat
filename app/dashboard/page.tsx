@@ -6,21 +6,75 @@ import FoodSearch from '@/components/FoodSearch'
 import FoodLog, { LogEntry } from '@/components/FoodLog'
 import MacroSummary from '@/components/MacroSummary'
 import Sidebar from '@/components/Sidebar'
+import AuthGuard from '@/components/AuthGuard'
 import { saveFoodLog } from '@/lib/services/foodlogs'
-import { getProfile } from '@/lib/services/profiles'
+import { getProfile, hasCompletedOnboarding } from '@/lib/services/profiles'
 import {
   History,
   Scroll,
   Flame,
 } from 'lucide-react'
-import AuthGuard from '@/components/AuthGuard'
+import OnboardingWizard from '@/app/onboarding/OnboardingWizard'
 
 export default function DashboardPage() {
   return (
     <AuthGuard>
-      <DashboardContent />
+      <DashboardWithOnboarding />
     </AuthGuard>
   )
+}
+
+function DashboardWithOnboarding() {
+  const [isLoading, setIsLoading] = useState(true)
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [checkCount, setCheckCount] = useState(0)
+
+  useEffect(() => {
+    async function checkOnboarding() {
+      try {
+        const completed = await hasCompletedOnboarding()
+        setShowOnboarding(!completed)
+      } catch (err) {
+        console.error('Error checking onboarding:', err)
+        // Continue to dashboard if check fails
+        setShowOnboarding(false)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    checkOnboarding()
+  }, [checkCount])
+
+  // Re-check onboarding every 2 seconds (for quick redirect detection)
+  useEffect(() => {
+    if (showOnboarding || isLoading) return
+
+    const interval = setInterval(() => {
+      setCheckCount(prev => prev + 1)
+    }, 2000)
+
+    return () => clearInterval(interval)
+  }, [showOnboarding, isLoading])
+
+  if (isLoading) {
+    return (
+      <div className="fusion-layout">
+        <Sidebar activePage="dashboard" />
+        <div className="fusion-main">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
+            <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (showOnboarding) {
+    return <OnboardingWizard />
+  }
+
+  return <DashboardContent />
 }
 
 type FoodType = 'meat' | 'rice' | 'vegetable' | 'milk' | 'fruit'
