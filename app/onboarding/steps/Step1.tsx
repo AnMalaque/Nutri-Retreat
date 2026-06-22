@@ -99,7 +99,7 @@ export default function Step1({ data, onChange, onNext }: Step1Props) {
             Sex
           </label>
           <div className="fusion-radio-group">
-            {['Male', 'Female', 'Other'].map((option) => (
+            {['Male', 'Female'].map((option) => (
               <label key={option} className="fusion-radio-item">
                 <input
                   type="radio"
