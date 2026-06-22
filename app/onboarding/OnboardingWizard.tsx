@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { upsertProfile, EMPTY_PROFILE } from '@/lib/services/profiles'
 import Step1 from './steps/Step1'
@@ -12,10 +11,8 @@ import './onboarding.css'
 import type { Profile } from '@/lib/services/profiles'
 
 export default function OnboardingWizard() {
-  const router = useRouter()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
 
   const [formData, setFormData] = useState<Profile>(EMPTY_PROFILE)
 
@@ -63,7 +60,7 @@ export default function OnboardingWizard() {
   }
 
   const handleSubmit = async () => {
-    if (loading || submitted) return
+    if (loading) return
     
     setLoading(true)
 
@@ -74,77 +71,17 @@ export default function OnboardingWizard() {
       // Clear session storage
       sessionStorage.removeItem('onboarding_data')
       
-      // Mark as submitted to show success state
-      setSubmitted(true)
-      
       toast.success('Welcome! Your profile is all set up.')
 
-      // Small delay to show success state, then redirect
+      // Refresh the page - dashboard will detect onboarding is complete
       setTimeout(() => {
-        router.push('/dashboard')
-      }, 500)
+        window.location.reload()
+      }, 1000)
     } catch (err: any) {
       console.error('Onboarding error:', err)
       toast.error(err.message || 'Failed to complete onboarding')
       setLoading(false)
     }
-  }
-
-  // Show success state after submission
-  if (submitted) {
-    return (
-      <main className="fusion-onboarding-wrap">
-        <div className="fusion-onboarding-glow">
-          <span />
-          <span />
-        </div>
-
-        <div className="fusion-card fusion-onboarding-card" style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <div style={{ fontSize: 48, marginBottom: 16 }}>✨</div>
-          <h2 style={{
-            fontSize: 24,
-            fontWeight: 700,
-            marginBottom: 8,
-            background: 'linear-gradient(135deg, rgb(255 200 100), rgb(200 150 255))',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-          }}>
-            All Set!
-          </h2>
-          <p style={{
-            fontSize: 14,
-            color: 'rgba(40, 40, 40, 0.6)',
-            marginBottom: 24,
-            lineHeight: 1.5,
-          }}>
-            Your profile has been saved successfully. Redirecting you to the dashboard...
-          </p>
-          <div style={{
-            width: '100%',
-            height: '3px',
-            background: 'rgba(255, 200, 100, 0.1)',
-            borderRadius: '999px',
-            overflow: 'hidden',
-          }}>
-            <div style={{
-              width: '100%',
-              height: '100%',
-              background: 'linear-gradient(90deg, rgba(255, 200, 100, 0.8), rgba(200, 150, 255, 0.8))',
-              animation: 'loading 1.5s ease-in-out infinite',
-            }} />
-          </div>
-        </div>
-
-        <style>{`
-          @keyframes loading {
-            0% { transform: translateX(-100%); }
-            50% { transform: translateX(100%); }
-            100% { transform: translateX(100%); }
-          }
-        `}</style>
-      </main>
-    )
   }
 
   return (
@@ -221,21 +158,21 @@ export default function OnboardingWizard() {
 
         {step === 5 && (
           <Step5
-          data={{
-            first_name: formData.first_name as string,
-            last_name: formData.last_name as string,
-            age: String(formData.age),
-            sex: formData.sex as string,
-            height_cm: String(formData.height_cm),
-            weight_kg: String(formData.weight_kg),
-            activity_level: formData.physical_activity_level as string,
-            goal: formData.goal as string,
-          }}
-          loading={loading}
-          onSubmit={handleSubmit}
-          onEdit={handleEdit}
-          onBack={handleBack}
-        />
+            data={{
+              first_name: formData.first_name as string,
+              last_name: formData.last_name as string,
+              age: String(formData.age),
+              sex: formData.sex as string,
+              height_cm: String(formData.height_cm),
+              weight_kg: String(formData.weight_kg),
+              activity_level: formData.physical_activity_level as string,
+              goal: formData.goal as string,
+            }}
+            loading={loading}
+            onSubmit={handleSubmit}
+            onEdit={handleEdit}
+            onBack={handleBack}
+          />
         )}
       </div>
 

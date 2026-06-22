@@ -1,6 +1,11 @@
 'use client'
-import { Zap } from 'lucide-react'
-
+import {
+  Armchair,
+  Footprints,
+  SportShoe,
+  Zap,
+  Flame,
+}from 'lucide-react'
 interface Step3Props {
   data: {
     activity_level: string
@@ -15,31 +20,31 @@ const ACTIVITY_LEVELS = [
     id: 'Sedentary',
     label: 'Sedentary',
     description: 'Little or no exercise',
-    emoji: '🪑',
+    icons: <Armchair/>,
   },
   {
-    id: 'Light',
-    label: 'Light Active',
+    id: 'Lightly Active',
+    label: 'Lightly Active',
     description: 'Exercise 1-3 days/week',
-    emoji: '🚶',
+    icons: <Footprints/>,
   },
   {
-    id: 'Moderate',
-    label: 'Moderate',
+    id: 'Moderately Active',
+    label: 'Moderately Active',
     description: 'Exercise 3-5 days/week',
-    emoji: '🏃',
+    icons: <SportShoe/>,
   },
   {
-    id: 'Active',
+    id: 'Very Active',
     label: 'Very Active',
     description: 'Exercise 6-7 days/week',
-    emoji: '⚡',
+    icons: <Zap/>,
   },
   {
-    id: 'VeryActive',
-    label: 'Extremely Active',
+    id: 'Extra Active',
+    label: 'Extra Active',
     description: 'Physical job or intense training',
-    emoji: '🔥',
+    icons: <Flame/>,
   },
 ]
 
@@ -69,7 +74,7 @@ export default function Step3({ data, onChange, onNext, onBack }: Step3Props) {
               className="sr-only"
             />
             <div className="fusion-card-select-content">
-              <span className="text-2xl">{level.emoji}</span>
+              <span className="text-2xl">{level.icons}</span>
               <div className="flex-1">
                 <p className="fusion-card-label">{level.label}</p>
                 <p className="fusion-card-description">{level.description}</p>

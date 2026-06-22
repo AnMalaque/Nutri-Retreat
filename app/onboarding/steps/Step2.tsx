@@ -1,7 +1,9 @@
 'use client'
 import { useState } from 'react'
 import { Ruler, Weight } from 'lucide-react'
-
+import {
+  Lightbulb
+}from 'lucide-react'
 interface Step2Props {
   data: {
     height_cm: string
@@ -63,7 +65,7 @@ export default function Step2({ data, onChange, onNext, onBack }: Step2Props) {
         {/* Quick Reference */}
         <div className="fusion-info-box">
           <p className="text-xs opacity-70">
-            💡 <strong>Tip:</strong> Enter your current measurements. You can update these anytime.
+            <Lightbulb size={32} className="inline mr-2" /> <strong>Tip:</strong> Enter your current measurements. You can update these anytime.
           </p>
         </div>
       </form>
