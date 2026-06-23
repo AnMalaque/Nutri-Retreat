@@ -175,12 +175,6 @@ export default function OnboardingWizard() {
           />
         )}
       </div>
-
-      {/* Step indicator */}
-      <p className="fusion-step-indicator">
-        Step <span className="font-semibold">{step}</span> of{' '}
-        <span className="font-semibold">5</span>
-      </p>
     </main>
   )
 }
